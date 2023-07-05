@@ -12,3 +12,12 @@ from config import db, bcrypt
 
 ################## Models Below####################
 
+class Character(db.Model, SerializerMixin):
+    __tablename__ = 'characters'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    head_img = db.Column(db.String)
+
+    def __repr__(self):
+        return f'ID: {self.id}, Name: {self.name}'
