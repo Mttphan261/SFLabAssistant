@@ -1,74 +1,93 @@
-[
+{
+    "characters": [
 {
     "name": "Marisa",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/MarisaHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/MarisaHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/MarisaMain.png"
 },
 {
     "name": "Manon",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/ManonHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/ManonHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/ManonMain.png"
 },
 {
     "name": "Jamie",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/JamieHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/JamieHead.png", 
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/JamieHead.png"
 },
 {
     "name": "Guile",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/GuileHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/GuileHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/JPMain.png"
 },
 {
     "name": "JP",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/JPHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/JPHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/BlankaMain.png"
 },
 {
     "name": "Luke",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/LukeHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/LukeHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/LukeMain.png"
 },
 {
     "name": "Juri",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/JuriHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/JuriHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/JuriMain.png"
 },
 {
     "name": "Lily",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/LilyHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/LilyHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/LilyMain.png"
 },
 {
     "name": "Ken Masters",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/KenHead.png"  
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/KenHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/KenMain.png"
 },
 {
     "name": "E. Honda",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/EHondaHead.png" 
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/EHondaHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/EHondaMain.png"
 },
 {  
     "name": "Dhalsim",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/DhalsimHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/DhalsimHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/DhalsimMain.png"
 },
 {
     "name": "Kimberly",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/KimberlyHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/KimberlyHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/KimberlyMain.png"
 },
 {
     "name": "Dee Jay",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/DeeJayHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/DeeJayHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/DeeJayMain.png"
 },
 {
     "name": "Ryu",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/RyuHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/RyuHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/RyuMain.png"
 },
 {
     "name": "Chun-Li",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/ChunLiHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/ChunLiHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/ChunLiMain.png"
 },
 {
     "name": "Blanka",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/BlankaHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/BlankaHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/BlankaMain.png"
 },
 {
     "name": "Zangief",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/ZangiefHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/ZangiefHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/ZangiefMain.png"
 },
 {
     "name": "Cammy",
-    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/CammyHead.png"
+    "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/CammyHead.png",
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/CammyMain.png"
 }
-]
+]}
