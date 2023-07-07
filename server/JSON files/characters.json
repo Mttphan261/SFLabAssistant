@@ -18,12 +18,12 @@
 {
     "name": "Guile",
     "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/GuileHead.png",
-    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/JPMain.png"
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/GuileMain.png"
 },
 {
     "name": "JP",
     "head_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterHeads/JPHead.png",
-    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/BlankaMain.png"
+    "main_img": "https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/RosterMains/JPMain.png"
 },
 {
     "name": "Luke",

@@ -20,6 +20,15 @@ class Characters(Resource):
 
 api.add_resource(Characters, '/characters')
 
+class CharacterByName(Resource):
+    def get(self, name):
+        try:
+            character = Character.query.filter_by(name=name).first().to_dict()
+            return character, 200
+        except:
+            return {'error': 'fighter not found'}, 404
+
+api.add_resource(CharacterByName, '/characters/<string:name>')
 
 
 if __name__ == '__main__':

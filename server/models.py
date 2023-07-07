@@ -22,8 +22,10 @@ class Character(db.Model, SerializerMixin):
 
     moves = db.relationship('Move', back_populates='character')
 
-    # def __repr__(self):
-    #     return f'ID: {self.id}, Name: {self.name}'
+    serialize_rules = ('-moves.character',)
+
+    def __repr__(self):
+        return f'ID: {self.id}, Name: {self.name}'
     
 class Move(db.Model, SerializerMixin):
     __tablename__ = 'moves'
@@ -35,6 +37,8 @@ class Move(db.Model, SerializerMixin):
     character_id = db.Column(db.Integer, db.ForeignKey('characters.id'))
     #relationships
     character = db.relationship('Character', back_populates='moves')
+
+    serialize_rules = ('-character.moves',)
 
     def __repr__(self):
         return f'Move: {self.id}, Character: {self.character_id}'
