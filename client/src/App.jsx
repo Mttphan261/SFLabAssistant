@@ -1,21 +1,45 @@
-import { useState } from 'react'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import reactLogo from './assets/react.svg'
-import Home from './components/pages/Home.jsx'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import reactLogo from "./assets/react.svg";
+import Home from "./components/pages/Home.jsx";
+import Fighter from "./components/pages/Fighter";
+import Header from "./components/pages/Header";
+import SignUp from "./components/pages/SignUp";
+import SignIn from "./components/pages/SignIn";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import UserContext from "./context/UserContext";
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (user == null) {
+      fetch("/api/check_session").then((r) => {
+        if (r.ok) {
+          r.json().then((user) => {
+            setUser(user);
+          });
+        }
+      });
+    }
+  }, []);
 
   return (
-    <>
-      <Router>
-        <Routes>
-          <Route path="/" index element = {<Home />}/>
-        </Routes>
-      </Router>
-    </>
-  )
+    <UserContext.Provider value={{ user, setUser }}>
+      <>
+        <Router>
+          <Header />
+          <Routes>
+            <Route path="/" index element={<Home />} />
+            <Route path="/characters/:name" element={<Fighter />} />
+            <Route path="/signUp" element = {<SignUp />} />
+            <Route path="/login" element = {<SignIn />} />
+          </Routes>
+        </Router>
+      </>
+    </UserContext.Provider>
+  );
 }
 
-export default App
+export default App;
