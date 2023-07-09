@@ -18,6 +18,7 @@ honcho = "*"
 gunicorn = "*"
 flask-login = "*"
 flask-bcrypt = "*"
+google-api-python-client = "*"
 
 [dev-packages]
 
