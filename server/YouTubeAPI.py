@@ -14,15 +14,27 @@ youtube = build('youtube', 'v3', developerKey=api_key)
 
 # print(response)
 
-def fetch_videos():
+
+def fetch_videos(video_ids):
     videos = []
     request = youtube.videos().list(
-    part='player',
-    id = ['jRAAaDll34Q', 'idYUy3hf3D0']
+    part='snippet, player',
+    id = video_ids
 )
 
     response = request.execute()
-    videos.append(response)
-    print(type(videos))
+    for item in response['items']:
+        video_id = item['id']
+        embed_html = item['player']['embedHtml']
+        snippet = item['snippet']
+        title = snippet['title']
+        description = snippet['description']
 
-fetch_videos()
+        videos.append({
+            'video_id': video_id,
+            'embed_html': embed_html,
+            'title': title,
+            'description': description
+        })
+
+    return videos

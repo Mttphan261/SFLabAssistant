@@ -1,10 +1,11 @@
 from flask_migrate import Migrate
-from models import Character, Move, User, UserCharacter
+from models import Character, Move, User, UserCharacter, Video
 from flask import Flask, request, session, make_response, jsonify, redirect
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import app, db, api, Resource
 import ipdb
 import traceback
+from YouTubeAPI import fetch_videos
 
 
 migrate = Migrate(app, db)
@@ -130,6 +131,38 @@ def logout():
     logout_user()
     return f'You have logged out. Goodbye'
 
+class Videos(Resource):
+    @login_required
+    def post(self):
+        try:
+            data = request.get_json()
+            character_id = data['character_id']
+            video_id = data['video_id']
+
+            video_data = fetch_videos([video_id])
+            if video_data:
+                video_info = video_data[0]
+                title = video_info['title']
+                description = video_info['description']
+                embed_html = video_info['embed_html']
+
+                video = Video(
+                    title = title,
+                    description = description,
+                    video_id = video_id,
+                    embed_html = embed_html,
+                    character_id = character_id,
+                    user_id = current_user.id
+                )
+                db.session.add(video)
+                db.session.commit()
+                return video.to_dict(), 201
+            
+        except Exception as e:
+            traceback.print_exc()
+            return {"error": "Video Submission failed", "message": str(e)}, 500
+
+api.add_resource(Videos, '/videos')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

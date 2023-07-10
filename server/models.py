@@ -23,11 +23,13 @@ class Character(db.Model, SerializerMixin):
     main_img = db.Column(db.String)
 
     #relationships
-    moves = db.relationship('Move', back_populates='character')    #relationships
+    moves = db.relationship('Move', back_populates='character')    
     user_characters = db.relationship('UserCharacter', back_populates='character')
+    videos = db.relationship('Video', back_populates='character')
+
 
     #serialization
-    serialize_rules = ('-moves.character',)
+    serialize_rules = ('-moves.character', '-videos.character')
 
     def __repr__(self):
         return f'ID: {self.id}, Name: {self.name}'
@@ -90,9 +92,10 @@ class User(db.Model, SerializerMixin, UserMixin):
     
     #relationships
     user_characters = db.relationship('UserCharacter', back_populates='user')
+    videos = db.relationship('Video', back_populates='user')
 
     #serialization
-    serialize_rules = ('-user.user_characters',)
+    serialize_rules = ('-user.user_characters', '-videos.user')
 
     def __repr__(self):
         return f'''
@@ -128,5 +131,24 @@ class UserCharacter(db.Model, SerializerMixin):
         User: {self.user.username},
         '''
 
+class Video(db.Model, SerializerMixin):
+    __tablename__ = 'videos'
 
+    id=db.Column(db.Integer, primary_key=True)
+    title=db.Column(db.String)
+    description=db.Column(db.String)
+    video_id=db.Column(db.String)
+    embed_html=db.Column(db.String)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, onupdate=db.func.now())    
+
+    #FKs
+    character_id=db.Column(db.Integer, db.ForeignKey('characters.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     
+    #relationships
+    user = db.relationship('User', back_populates='videos')
+    character = db.relationship('Character', back_populates='videos')
+
+    #serialization
+    serialize_rules = ('-user.videos', '-character.videos',)
