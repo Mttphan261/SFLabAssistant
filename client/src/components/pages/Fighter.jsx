@@ -6,6 +6,8 @@ import Table from "react-bootstrap/Table";
 import Card from "react-bootstrap/Card";
 import CardGroup  from "react-bootstrap/CardGroup";
 import Row from "react-bootstrap/Row"
+import ReactPlayer from 'react-player'
+import VideoForm from "./VideoForm";
 
 
 function Fighter() {
@@ -52,12 +54,13 @@ function Fighter() {
         <div>
         <CardGroup>
         <Row xs={1} md={2} className="g-4">
+          <VideoForm />
           {fighter.videos.map((video) => (
               <Card key={video.id} style={{ width: '18rem' }}>
                 <Card.Body>
-                  <div
-                    dangerouslySetInnerHTML={{ __html: video.embed_html }}
-                    className="embed-resposne embed-responsive-16by9"
+                  <ReactPlayer 
+                  url={video.embed_html}
+                  style={{ borderRadius: '10px' }} //Not sure what this is doing? 
                   />
                   <Card.Title>{video.title}</Card.Title>
                 </Card.Body>
