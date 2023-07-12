@@ -43,6 +43,10 @@ function VideoForm() {
         if (response.ok) {
             const video = await response.json();
             console.log('Video submitted:', video)
+
+            const characterResponse = await fetch(`/api/characters/${name}`)
+            const updatedFighter = await characterResponse.json()
+            setFighter(updatedFighter)
         } else {
             console.error('Video submission failed', response.status)
         } 

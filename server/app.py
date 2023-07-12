@@ -36,22 +36,58 @@ class CharacterByName(Resource):
 
 api.add_resource(CharacterByName, '/characters/<string:name>')
 
+class UserCharacters(Resource):
+    @login_required
+    def post(self):
+        try:            
+            data = request.get_json()
+            name = data['name']
+            user = current_user
+            character = Character.query.filter_by(name=name).first()
+
+            already_in_roster = UserCharacter.query.filter_by(
+                user_id = user.id,
+                character_id = character.id
+            ).first()
+
+            if already_in_roster:
+                return {"message": "Character already exists in the user's roster"}, 400    
+
+            new_user_character = UserCharacter(
+                user_id = user.id,
+                character_id = character.id,
+                is_main = False,
+                is_alt = False
+            )
+            db.session.add(new_user_character)
+            db.session.commit()
+            return new_user_character.to_dict(), 201
+        
+        except Exception as e:
+            traceback.print_exc()
+            return {"error": "UserCharacter failed.", "message": str(e)}, 500 
+        
+api.add_resource(UserCharacters, '/usercharacters')
+
 #**********AUTHENTICATION ROUTES**********
 class Users(Resource):
     @login_required
     def get(self):
-        try:
+        # try:
             user = current_user
             if user:
-                return {
-                    "id": user.id,
-                    "username": user.username,
-                    "email": user.email
-                }, 200
+                # return {
+                #     "id": user.id,
+                #     "username": user.username,
+                #     "email": user.email,
+                #     # "videos": user.videos,'TypeError: Object of type Video is not JSON serializable'
+                #     "user_characters": [uc.to_dict() for uc in user.user_characters]
+                # }, 200
+                return user.to_dict()
             else:
                 return {"error": "User not found"}, 404
-        except:
-            return {"error": "An error occurred while fetching the user"}, 500
+        # except:
+        #     return {"error": "An error occurred while fetching the user"}, 500
     
     @login_required
     def delete(self):
@@ -163,6 +199,40 @@ class Videos(Resource):
             return {"error": "Video Submission failed", "message": str(e)}, 500
 
 api.add_resource(Videos, '/videos')
+
+
+class UserCharacterVideos(Resource):
+    @login_required
+    def post(self, user_character_id):
+        try:
+            user_character = UserCharacter.query.get(user_character_id)
+
+            if not user_character or user_character.user_id != current_user.id:
+                return {'error': 'User character not found'}, 404
+            data = request.get_json()
+            title = data.get('title')
+            description = data.get('description')
+            video_id = data.get('video_id')
+            embed_html = data.get('embed_html')
+
+            video = Video(
+                title=title,
+                description=description,
+                video_id=video_id,
+                embed_html=embed_html,
+                user_character_id=user_character_id
+            )
+
+            db.session.add(video)
+            db.session.commit()
+
+            return video.to_dict(), 201
+        except Exception as e:
+            traceback.print.exc()
+            return {'error': 'Failed to add video to user character', 'message': str(e)}, 500
+        
+api.add_resource(UserCharacterVideos, '/usercharacters/<int:user_character_id>/videos')
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

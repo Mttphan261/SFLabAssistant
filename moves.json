@@ -1,4 +1,5 @@
-[
+{
+  "moves": [
     {
       "name": "Standing Light Punch",
       "command": "5LP",
@@ -163,6 +164,216 @@
       "name": "Back Throw",
       "command": "(4LPLK)",
       "character_id": 1
+    },
+    {
+      "name": "Standing Light Punch",
+      "command": "5LP",
+      "character_id": 2
+    },
+    {
+        "name": "Standing Medium Punch",
+        "command": "5MP",
+        "character_id": 2
+    },
+    {
+        "name": "Standing Heavy Punch",
+        "command": "5HP",
+        "character_id": 2
+    },
+    {
+        "name": "Standing Light Kick",
+        "command": "5LK",
+        "character_id": 2
+    },
+    {
+        "name": "Standing Medium Kick",
+        "command": "5MK",
+        "character_id": 2
+    },
+    {
+        "name": "Standing Heavy Kick",
+        "command": "5HK",
+        "character_id": 2
+    },
+    {
+        "name": "Crouching Light Punch",
+        "command": "2LP",
+        "character_id": 2
+    },
+    {
+        "name": "Crouching Medium Punch",
+        "command": "2MP",
+        "character_id": 2
+    },
+    {
+        "name": "Crouching Heavy Punch",
+        "command": "2HP",
+        "character_id": 2
+    },
+    {
+        "name": "Crouching Light Kick",
+        "command": "2LK",
+        "character_id": 2
+    },
+    {
+        "name": "Crouching Medium Kick",
+        "command": "2MK",
+        "character_id": 2
+    },
+    {
+        "name": "Crouching Heavy Kick",
+        "command": "2HK",
+        "character_id": 2
+    },
+    {
+        "name": "Jumping Light Punch",
+        "command": "j.LP",
+        "character_id": 2
+    },
+    {
+        "name": "Jumping Medium Punch",
+        "command": "j.MP",
+        "character_id": 2
+    },
+    {
+        "name": "Jumping Heavy Punch",
+        "command": "j.HP",
+        "character_id": 2
+    },
+    {
+        "name": "Jumping Light Kick",
+        "command": "j.LK",
+        "character_id": 2
+    },
+    {
+        "name": "Jumping Medium Kick",
+        "command": "j.MK",
+        "character_id": 2
+    },
+    {
+        "name": "Jumping Heavy Kick",
+        "command": "j.HK",
+        "character_id": 2
+    },
+    {
+        "name": "En Haut",
+        "command": "4MK~MK",
+        "character_id": 2
+    },
+    {
+        "name": "Révérence",
+        "command": "4HP",
+        "character_id": 2
+    },
+    {
+        "name": "Tomoe Derrière",
+        "command": "3HK",
+        "character_id": 2
+    },
+    {
+        "name": "À Terre",
+        "command": "5MP~MK",
+        "character_id": 2
+    },
+    {
+        "name": "Temps Lié",
+        "command": "5HP~HP",
+        "character_id": 2
+    },
+    {
+        "name": "Allongé",
+        "command": "2HP~HP",
+        "character_id": 2
+    },
+    {
+        "name": "Forward Throw",
+        "command": "LPLK",
+        "character_id": 2
+    },
+    {
+        "name": "Back Throw",
+        "command": "4LPLK",
+        "character_id": 2
+    },
+    {
+        "name": "Drive Impact",
+        "command": "HPHK",
+        "character_id": 2
+    },
+    {
+        "name": "Drive Reversal",
+        "command": "6HPHK",
+        "character_id": 2
+    },
+    {
+        "name": "Drive Parry",
+        "command": "MPMK",
+        "character_id": 2
+    },
+    {
+        "name": "Drive Rush",
+        "command": "66",
+        "character_id": 2
+    },
+    {
+        "name": "Manège Doré",
+        "command": "63214P",
+        "character_id": 2
+    },
+    {
+        "name": "Renversé",
+        "command": "236P",
+        "character_id": 2
+    },
+    {
+        "name": "Renversé Feint",
+        "command": "236[P]",
+        "character_id": 2
+    },
+    {
+        "name": "Grand Fouetté",
+        "command": "236P~K",
+        "character_id": 2
+    },
+    {
+        "name": "Rond-point",
+        "command": "236K",
+        "character_id": 2
+    },
+    {
+        "name": "Dégagé",
+        "command": "214K",
+        "character_id": 2
+    },
+    {
+        "name": "Level 1 Super",
+        "command": "236236K",
+        "character_id": 2
+    },
+    {
+        "name": "Level 2 Super",
+        "command": "214214K",
+        "character_id": 2
+    },
+    {
+        "name": "Level 3 Super",
+        "command": "236236P",
+        "character_id": 2
+    },
+    {
+        "name": "Neutral Taunt",
+        "command": "5PPPKKK",
+        "character_id": 2
+    },
+    {
+        "name": "Forward Taunt",
+        "command": "6PPPKKK",
+        "character_id": 2
+    },
+    {
+        "name": "Back Taunt",
+        "command": "4PPPKKK",
+        "character_id": 2
     },
     {
         "name": "Standing Light Punch",
@@ -3012,7 +3223,8 @@
       },
       {
         "name": "Standing Heavy Kick",
-        "command": "5HK"
+        "command": "5HK",
+        "character_id": 15
       },
       {
         "name": "Crouching Light Punch",
@@ -3980,3 +4192,4 @@
         "character_id": 18
       }
 ]
+}

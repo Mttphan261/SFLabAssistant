@@ -1,6 +1,6 @@
 from app import app
 #import models when created
-from models import db, Character, Move, Video
+from models import db, Character, Move, Video, UserCharacter
 import pickle
 import os
 import ipdb
@@ -101,7 +101,7 @@ def clear_tables():
     # db.session.query(Character).delete()
     # db.session.query(Move).delete()
     db.session.query(Video).delete()
-    db.session.commit()
+    db.session.query(UserCharacter).delete()
 
 if __name__ == "__main__":
     with app.app_context():

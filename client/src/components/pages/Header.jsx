@@ -22,9 +22,17 @@ function Header() {
     <Navbar>
       <Navbar.Brand>
         <Link to="/">SF6 Lab Assistant</Link>
-        <Link to="/signup">Sign Up</Link>
-        <Link to="/login">Login</Link>
-        <Button onClick={handleLogout}>Logout</Button>
+        {user ? (
+          <>
+            <Link to="/profile">Profile</Link>
+            <Button onClick={handleLogout}>Logout</Button>
+          </>
+        ) : (
+          <>
+            <Link to="/signup">Sign Up</Link>
+            <Link to="/login">Login</Link>
+          </>
+        )}
       </Navbar.Brand>
     </Navbar>
   );
