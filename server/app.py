@@ -1,5 +1,5 @@
 from flask_migrate import Migrate
-from models import Character, Move, User, UserCharacter, Video
+from models import Character, Move, User, UserCharacter, Video, TrainingNote
 from flask import Flask, request, session, make_response, jsonify, redirect
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import app, db, api, Resource
@@ -68,6 +68,23 @@ class UserCharacters(Resource):
             return {"error": "UserCharacter failed.", "message": str(e)}, 500 
         
 api.add_resource(UserCharacters, '/usercharacters')
+
+class UserCharacterByID(Resource):
+    @login_required
+    def delete(self, user_character_id):
+        try:
+            deleted_uc = UserCharacter.query.get(user_character_id)
+            if not deleted_uc or deleted_uc.user_id != current_user.id:
+                return {'error': 'User character not found'}, 404
+            db.session.delete(deleted_uc)
+            db.session.commit()
+            return {'message': 'Character deleted from user roster'}
+        
+        except Exception as e:
+            traceback.print.exc()
+            return {'error': 'Failed to delete character from user roster', 'message': str(e)}, 500  
+
+api.add_resource(UserCharacterByID, '/usercharacters/<int:user_character_id>')
 
 #**********AUTHENTICATION ROUTES**********
 class Users(Resource):
@@ -231,7 +248,92 @@ class UserCharacterVideos(Resource):
             traceback.print.exc()
             return {'error': 'Failed to add video to user character', 'message': str(e)}, 500
         
+    @login_required
+    def delete(self, user_character_id):
+        data = request.get_json()
+        videoId = data.get('videoId')
+        try:
+            user_character = UserCharacter.query.get(user_character_id)
+            deleted_video = Video.query.get(videoId)
+
+            if not user_character or not deleted_video or user_character.user_id != current_user.id:
+                return {'error': 'User character or video not found'}, 404
+
+            db.session.delete(deleted_video)
+            db.session.commit()
+            return {'message': 'User character video deleted'}, 200
+        
+        except Exception as e:
+            traceback.print.exc()
+            return {'error': 'Failed to delete video for user character', 'message': str(e)}, 500  
+        
 api.add_resource(UserCharacterVideos, '/usercharacters/<int:user_character_id>/videos')
+
+
+class TrainingNotes(Resource):
+    @login_required
+    def post(self, user_character_id):
+        try:
+            user_character = UserCharacter.query.get(user_character_id)
+
+            if not user_character or user_character.user_id != current_user.id:
+                return {'error': 'User character not found'}, 404
+            data = request.get_json()
+            note = data.get('note')
+
+            new_training_note = TrainingNote(
+                note = note,
+                user_id = current_user.id,
+                user_character_id = user_character_id
+            )
+            db.session.add(new_training_note)
+            db.session.commit()
+            return new_training_note.to_dict()
+        except Exception as e:
+            traceback.print.exc()
+            return {'error': 'Failed to add video to user character', 'message': str(e)}, 500   
+
+    @login_required
+    def delete(self, user_character_id):
+        data = request.get_json()
+        note_id = data.get('note_id')
+        try:
+            user_character = UserCharacter.query.get(user_character_id)
+            training_note = TrainingNote.query.get(note_id)
+
+            if not user_character or not training_note or user_character.user_id != current_user.id:
+                return {'error': 'User character or training note not found'}, 404
+
+            db.session.delete(training_note)
+            db.session.commit()
+            return {'message': 'Training note deleted'}, 200
+        except Exception as e:
+            traceback.print.exc()
+            return {'error': 'Failed to add video to user character', 'message': str(e)}, 500  
+
+    @login_required
+    def patch(self, user_character_id):
+        data = request.get_json()
+        note_id = data.get('note_id')
+        note = data.get('note')
+        try:
+            user_character = UserCharacter.query.get(user_character_id)
+            training_note = TrainingNote.query.get(note_id)
+
+            if not user_character or not training_note or user_character.user_id != current_user.id:
+                return {'error': 'User character or training note not found'}, 404
+            
+            training_note.note = note
+            db.session.add(training_note)
+            db.session.commit()
+
+            return training_note.to_dict(), 200
+        
+        except Exception as e:
+            traceback.print.exc()
+            return {'error': 'Failed to add video to user character', 'message': str(e)}, 500   
+
+api.add_resource(TrainingNotes, '/usercharacters/<int:user_character_id>/notes')
 
 
 if __name__ == '__main__':
