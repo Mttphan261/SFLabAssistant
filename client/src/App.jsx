@@ -8,6 +8,7 @@ import SignUp from "./components/pages/SignUp";
 import SignIn from "./components/pages/SignIn";
 import Profile from "./components/pages/Profile";
 import viteLogo from "/vite.svg";
+import 'bootstrap/dist/css/bootstrap.css';
 import "./App.css";
 import UserContext from "./context/UserContext";
 
