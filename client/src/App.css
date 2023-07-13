@@ -1,8 +1,29 @@
+:root {
+  --argBlue:#6ab0ff;
+  --pumpkin: #ff8b43;
+  --steelPink: #c200cc;
+  --grey: #efefef;
+}
+
+body {
+  background-color: var(--grey)
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+/* HOME PAGE */
+
+.rosterIcon {
+  width: 100%
+}
+
+.jumbotron {
+  
 }
 
 .logo {

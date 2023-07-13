@@ -6,7 +6,9 @@ import Fighter from "./components/pages/Fighter";
 import Header from "./components/pages/Header";
 import SignUp from "./components/pages/SignUp";
 import SignIn from "./components/pages/SignIn";
+import Profile from "./components/pages/Profile";
 import viteLogo from "/vite.svg";
+import 'bootstrap/dist/css/bootstrap.css';
 import "./App.css";
 import UserContext from "./context/UserContext";
 
@@ -35,6 +37,7 @@ function App() {
             <Route path="/characters/:name" element={<Fighter />} />
             <Route path="/signUp" element = {<SignUp />} />
             <Route path="/login" element = {<SignIn />} />
+            <Route path="/profile" element = {<Profile />} />
           </Routes>
         </Router>
       </>

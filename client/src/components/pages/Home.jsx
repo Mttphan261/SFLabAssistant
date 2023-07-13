@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Card, Container, Image } from "react-bootstrap";
+import { Card, Container, Image, Row, Col } from "react-bootstrap";
 
 const Home = () => {
   const [characters, setCharacters] = useState([]);
@@ -16,20 +16,26 @@ const Home = () => {
 
   const characterDisplay = characters.map((character) => {
     return (
-      <div>
+      <Col md={2}>
         <Link to={`/characters/${character.name}`} key={character.id}>
-          <Image roundedCircle src={character.head_img} alt={character.name}/>
+          <Image
+            className="rosterIcon"
+            roundedCircle
+            src={character.head_img}
+            alt={character.name}
+          />
         </Link>
-      </div>
+      </Col>
     );
   });
 
   return (
     <div>
-      <h1>Street Fighter 6 Lab Assistant</h1>
-      <Container>
-        <section>{characterDisplay}</section>
-      </Container>
+      <div className='jumbotron jumbotron-fluid'>
+        <Container>
+          <Row>{characterDisplay}</Row>
+        </Container>
+      </div>
     </div>
   );
 };

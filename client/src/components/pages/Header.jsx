@@ -20,12 +20,30 @@ function Header() {
 
   return (
     <Navbar>
-      <Navbar.Brand>
-        <Link to="/">SF6 Lab Assistant</Link>
-        <Link to="/signup">Sign Up</Link>
-        <Link to="/login">Login</Link>
-        <Button onClick={handleLogout}>Logout</Button>
-      </Navbar.Brand>
+      <Container>
+        <Navbar.Brand>
+          <Link to="/">SF6 Lab Assistant</Link>
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav
+            className="custom-header justify-content-end"
+            style={{ width: "100%" }}
+          >
+            {user ? (
+              <>
+                <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
+                <Button onClick={handleLogout}>Logout</Button>
+              </>
+            ) : (
+              <>
+                <Nav.Link as={Link}  to="/signup">Sign Up</Nav.Link>
+                <Nav.Link as={Link}  to="/login">Login</Nav.Link>
+              </>
+            )}
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
     </Navbar>
   );
 }
