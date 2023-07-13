@@ -159,7 +159,7 @@ class Login(Resource):
             if user:
                 if user.authenticate(password):
                     login_user(user, remember=True)
-                    return {'message': 'Login successful'}, 200
+                    return user.to_dict(), 200
             return {'error': '401 Unauthorized'}, 401
         
         except Exception as e:
