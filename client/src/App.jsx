@@ -29,7 +29,7 @@ function App() {
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
-      <>
+      <div className='App'>
         <Router>
           <Header />
           <Routes>
@@ -40,7 +40,7 @@ function App() {
             <Route path="/profile" element = {<Profile />} />
           </Routes>
         </Router>
-      </>
+      </div>
     </UserContext.Provider>
   );
 }

@@ -7,8 +7,10 @@ import Table from "react-bootstrap/Table";
 import Card from "react-bootstrap/Card";
 import CardGroup from "react-bootstrap/CardGroup";
 import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import ReactPlayer from "react-player";
 import VideoForm from "./VideoForm";
+import Accordion from "react-bootstrap/Accordion";
 
 function Fighter() {
   const { user, setUser } = useContext(UserContext);
@@ -20,6 +22,9 @@ function Fighter() {
   const [trainingNote, setTrainingNote] = useState("");
   const [updatedNote, setUpdateNote] = useState("");
   const [updateNoteToggle, setUpdateNoteToggle] = useState({});
+  const [showMoves, setShowMoves] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
+  const [activeSection, setActiveSection] = useState("video library");
 
   useEffect(() => {
     fetch(`/api/characters/${name}`)
@@ -106,7 +111,7 @@ function Fighter() {
       );
       if (response.ok) {
         const newVideo = await response.json();
-        setUserCharacterVids((prevVideos) => [...prevVideos, newVideo])
+        setUserCharacterVids((prevVideos) => [...prevVideos, newVideo]);
         console.log("Video added to user character's library");
       } else {
         console.error(
@@ -144,7 +149,10 @@ function Fighter() {
         );
         console.log("video deleted from user library");
       } else {
-        console.error("Failed to delete video from user library", response.status);
+        console.error(
+          "Failed to delete video from user library",
+          response.status
+        );
       }
     } catch (error) {
       console.error("Failed to delete video from user library", error);
@@ -263,172 +271,349 @@ function Fighter() {
     }
   };
 
+  const toggleMovesVisibility = () => {
+    setShowMoves(!showMoves);
+  };
+
+  const toggleNotesVisibility = () => {
+    setShowNotes(!showNotes);
+  };
+
+  const switchView = (section) => {
+    setActiveSection(section);
+  };
+
+  const renderVideoLibrary = () => {
+    return (
+      <>
+        <Row>
+          {/* ADD VIDEO BAR */}
+          {user ? (
+            <VideoForm />
+          ) : (
+            <h2>Login or signup to add to this fighter's video library.</h2>
+          )}
+          {/* ADD VIDEO BAR */}
+          {fighter.videos.map((video) => (
+            <Row
+              key={video.id}
+              className="seperator"
+              style={{
+                border: "1px solid black",
+              }}
+            >
+              <Col sm={6}>
+                <div className="teddytest">
+                  <ReactPlayer
+                    className="react-player"
+                    url={video.embed_html}
+                  />
+                </div>
+              </Col>
+              <Col sm={6}>
+                <h2>{video.title}</h2>
+                <button onClick={() => addVideoToUserCharacter(video.video_id)}>
+                  Add video to your video library
+                </button>
+              </Col>
+            </Row>
+          ))}
+        </Row>
+      </>
+    );
+  };
+
+  const renderUserVideos = () => {
+    return (
+      <>
+        <Row>
+          {userCharacterVids.map((video) => (
+            <Row
+              key={video.id}
+              className="seperator"
+              style={{
+                border: "1px solid black",
+              }}
+            >
+              <Col sm={6}>
+                <div className="teddytest">
+                  <ReactPlayer
+                    className="react-player"
+                    url={video.embed_html}
+                  />
+                </div>
+              </Col>
+              <Col sm={6}>
+                <h2>{video.title}</h2>
+                <button onClick={() => handleDeleteVideo(video.id)}>
+                  Delete From Your Library
+                </button>
+              </Col>
+            </Row>
+          ))}
+        </Row>
+      </>
+    );
+  };
+
+  //   <button onClick={() => handleDeleteVideo(video.id)}>
+  //   Delete From Your Library
+  // </button>
+
   return (
     <Container>
-      <div>
-        <Figure>
-          <Figure.Image src={fighter.main_img} alt={fighter.name} />
+      <Row>
+        <Figure className="col-sm-6">
+          <Figure.Image
+            src={fighter.main_img}
+            alt={fighter.name}
+            style={{ width: "100%" }}
+          />
         </Figure>
-        {user ? (
-          isInRoster ? (
-            <button disabled>In Roster</button>
+        <Col sm={2}>
+          <h1>{fighter.name}</h1>
+          {user ? (
+            isInRoster ? (
+              <button disabled>In Roster</button>
+            ) : (
+              <button onClick={addToRoster}>Add to Roster</button>
+            )
           ) : (
-            <button onClick={addToRoster}>Add to Roster</button>
-          )
-        ) : (
-          <h2>Login or signup to add this fighter to your roster</h2>
+            <h2>Login or signup to add this fighter to your roster</h2>
+          )}
+        </Col>
+      </Row>
+      <hr />
+      <Row
+        style={{
+          padding: "25px",
+        }}
+      >
+        <Col sm={6}>
+          <Accordion
+            classname="commands-list"
+            style={{
+              width: "flex",
+            }}
+          >
+            <Accordion.Item eventKey="0" onClick={toggleMovesVisibility}>
+              <Accordion.Header>COMMAND LIST</Accordion.Header>
+              <Accordion.Body>
+                <Card>
+                  <Table striped border style={{}}>
+                    <thead>
+                      <tr>
+                        <th>Move Name</th>
+                        <th>Command</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {fighter.moves.map((move) => (
+                        <tr key={move.id}>
+                          <td>{move.name}</td>
+                          <td>{move.command}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </Card>
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+        </Col>
+        <Col sm={6}>
+          <Accordion
+            style={{
+              width: "50%",
+            }}
+          >
+            <Accordion.Item eventKey="0" onClick={toggleNotesVisibility}>
+              <Accordion.Header>TRAINING NOTES</Accordion.Header>
+              <Accordion.Body>
+                <Card>
+                  <Table striped border style={{}}>
+                    <tbody>
+                      {userCharacterNotes.map((note) => (
+                        <tr key={note.id}>
+                          <td>
+                            {note.note}
+                            {user && (
+                              <div>
+                                {updateNoteToggle[note.id] ? (
+                                  <form
+                                    onSubmit={(e) => {
+                                      e.preventDefault();
+                                      handleUpdateNote(note.id);
+                                      setUpdateNoteToggle((prevToggle) => ({
+                                        ...prevToggle,
+                                        [note.id]: false,
+                                      }));
+                                    }}
+                                  >
+                                    <input
+                                      type="text"
+                                      value={updatedNote}
+                                      onChange={(e) =>
+                                        setUpdateNote(e.target.value)
+                                      }
+                                    />
+                                    <button
+                                      onClick={() => handleDeleteNote(note.id)}
+                                    >
+                                      Delete
+                                    </button>
+                                    <button type="submit">
+                                      Update Training Note
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        setUpdateNoteToggle((prevToggle) => ({
+                                          ...prevToggle,
+                                          [note.id]: false,
+                                        }))
+                                      }
+                                    >
+                                      Cancel
+                                    </button>
+                                  </form>
+                                ) : (
+                                  <button
+                                    onClick={() =>
+                                      setUpdateNoteToggle((prevToggle) => ({
+                                        ...prevToggle,
+                                        [note.id]: true,
+                                      }))
+                                    }
+                                  >
+                                    Update/Delete Training Note
+                                  </button>
+                                )}
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                      <tr>
+                        {" "}
+                        <td>
+                          <h3>Add Training Note</h3>
+                          <form onSubmit={handleSubmitNote}>
+                            <textarea
+                              value={trainingNote}
+                              onChange={handleNoteChange}
+                            />
+                            <button type="submit">Submit</button>
+                          </form>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </Card>
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+        </Col>
+      </Row>
+      {/* <Row xs={1} md={2} className="g-4">
+        {user && (
+          <Card style={{ width: "18rem" }}>
+            <Card.Body>
+              <h3>Add Training Note</h3>
+              <form onSubmit={handleSubmitNote}>
+                <textarea value={trainingNote} onChange={handleNoteChange} />
+                <button type="submit">Submit</button>
+              </form>
+            </Card.Body>
+          </Card>
         )}
-        <Table striped border>
-          <thead>
-            <tr>
-              <th>{fighter.name}</th>
-            </tr>
-            <tr>
-              <th>Move Name</th>
-              <th>Command</th>
-            </tr>
-          </thead>
-          <tbody>
-            {fighter.moves.map((move) => (
-              <tr key={move.id}>
-                <td>{move.name}</td>
-                <td>{move.command}</td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-        <div>
-          <CardGroup>
-            <Row xs={1} md={2} className="g-4">
-              {user ? (
-                <VideoForm />
-              ) : (
-                <h2>Login or signup to add to this fighter's video library.</h2>
-              )}
-              <h2>Fighter Video Library</h2>
-              {fighter.videos.map((video) => (
-                <Card key={video.id} style={{ width: "18rem" }}>
-                  <Card.Body>
-                    <ReactPlayer
-                      url={video.embed_html}
-                      style={{ borderRadius: "10px" }} //Not sure what this is doing?
-                    />
-                    <Card.Title>{video.title}</Card.Title>
-                    <button
-                      onClick={() => addVideoToUserCharacter(video.video_id)}
-                    >
-                      Add video to your video library
-                    </button>
-                  </Card.Body>
-                </Card>
-              ))}
-            </Row>
-            <Row xs={1} md={2} className="g-4">
-              <h2>User Video Library</h2>
-              {userCharacterVids.map((video) => (
-                <Card key={video.id} style={{ width: "18rem" }}>
-                  <Card.Body>
-                    <ReactPlayer
-                      url={video.embed_html}
-                      style={{ borderRadius: "10px" }} //Not sure what this is doing?
-                    />
-                    <Card.Title>{video.title}</Card.Title>
-                    <button onClick={() => handleDeleteVideo(video.id)}>
-                              Delete From Your Library
-                            </button>
-                  </Card.Body>
-                </Card>
-              ))}
-            </Row>
-            <Row xs={1} md={2} className="g-4">
+      </Row> */}
+
+      {/* {userCharacterNotes.map((note) => (
+          <Card key={note.id} style={{ width: "18rem" }}>
+            <Card.Body>
+              <h3>{note.note}</h3>
               {user && (
-                <Card style={{ width: "18rem" }}>
-                  <Card.Body>
-                    <h3>Add Training Note</h3>
-                    <form onSubmit={handleSubmitNote}>
-                      <textarea
-                        value={trainingNote}
-                        onChange={handleNoteChange}
-                      />
-                      <button type="submit">Submit</button>
-                    </form>
-                  </Card.Body>
-                </Card>
-              )}
-              <h2>Training Notes</h2>
-              {userCharacterNotes.map((note) => (
-                <Card key={note.id} style={{ width: "18rem" }}>
-                  <Card.Body>
-                    <h3>{note.note}</h3>
-                    {/* {user && (
-                      <form onSubmit={(e) => {
-                        e.preventDefault()
-                        handleUpdateNote(note.id)
-                      }}>
-                        <input 
-                        type="text" 
+                <div>
+                  {updateNoteToggle[note.id] ? (
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleUpdateNote(note.id);
+                        setUpdateNoteToggle((prevToggle) => ({
+                          ...prevToggle,
+                          [note.id]: false,
+                        }));
+                      }}
+                    >
+                      <input
+                        type="text"
                         value={updatedNote}
                         onChange={(e) => setUpdateNote(e.target.value)}
-                         />
-                        <button type="submit">Update Training Note</button>
-                        <button onClick={() => handleDeleteNote(note.id)}>
-                          Delete
-                        </button>
-                      </form>
-                    )} */}
-                    {user && (
-                      <div>
-                        {updateNoteToggle[note.id] ? (
-                          <form
-                            onSubmit={(e) => {
-                              e.preventDefault();
-                              handleUpdateNote(note.id);
-                              setUpdateNoteToggle((prevToggle) => ({
-                                ...prevToggle,
-                                [note.id]: false,
-                              }));
-                            }}
-                          >
-                            <input
-                              type="text"
-                              value={updatedNote}
-                              onChange={(e) => setUpdateNote(e.target.value)}
-                            />
-                            <button onClick={() => handleDeleteNote(note.id)}>
-                              Delete
-                            </button>
-                            <button type="submit">Update Training Note</button>
-                            <button
-                              onClick={() =>
-                                setUpdateNoteToggle((prevToggle) => ({
-                                  ...prevToggle,
-                                  [note.id]: false,
-                                }))
-                              }
-                            >
-                              Cancel
-                            </button>
-                          </form>
-                        ) : (
-                          <button
-                            onClick={() =>
-                              setUpdateNoteToggle((prevToggle) => ({
-                                ...prevToggle,
-                                [note.id]: true,
-                              }))
-                            }
-                          >
-                            Update/Delete Training Note
-                          </button>
-                        )}
-                      </div>
-                    )}
-                  </Card.Body>
-                </Card>
-              ))}
-            </Row>
-          </CardGroup>
-        </div>
+                      />
+                      <button onClick={() => handleDeleteNote(note.id)}>
+                        Delete
+                      </button>
+                      <button type="submit">Update Training Note</button>
+                      <button
+                        onClick={() =>
+                          setUpdateNoteToggle((prevToggle) => ({
+                            ...prevToggle,
+                            [note.id]: false,
+                          }))
+                        }
+                      >
+                        Cancel
+                      </button>
+                    </form>
+                  ) : (
+                    <button
+                      onClick={() =>
+                        setUpdateNoteToggle((prevToggle) => ({
+                          ...prevToggle,
+                          [note.id]: true,
+                        }))
+                      }
+                    >
+                      Update/Delete Training Note
+                    </button>
+                  )}
+                </div>
+              )}
+            </Card.Body>
+          </Card>
+        ))} */}
+      <hr />
+      <Row>
+        <Col md={2}>
+          <h2
+            onClick={() => switchView("video library")}
+            className={
+              activeSection === "video library"
+                ? "video-library-section active"
+                : "video-library-section"
+            }
+          >
+            Fighter Video Library
+          </h2>
+        </Col>
+        <Col md={2}>
+          <h2
+            onClick={() => switchView("user video library")}
+            className={
+              activeSection === "user video library"
+                ? "video-library-section active"
+                : "video-library-section"
+            }
+          >
+            User Video Library
+          </h2>
+        </Col>
+      </Row>
+      <hr />
+      <div>
+        {activeSection === "video library"
+          ? renderVideoLibrary()
+          : renderUserVideos()}
       </div>
     </Container>
   );

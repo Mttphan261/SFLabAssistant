@@ -9,21 +9,159 @@ body {
   background-color: var(--grey)
 }
 
-#root {
+/* #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+} */
+
+/* html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+} */
+
+body {
+  overflow-x: hidden;
+}
+
+.App {
+  min-height: 100vh;
+  width: 100vw;
 }
 
 /* HOME PAGE */
 
+/*Roster Icon Splatter Image */
+
 .rosterIcon {
-  width: 100%
+  width: 100%;
+  /* position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); */
 }
 
+.outer-image {
+  position: relative;
+  display: inline-block;
+}
+
+.circle {
+  /* display:none; */
+  /* position: absolute;
+  top: 100px;
+  left: 100px;
+  z-index: 800; */
+  position: relative;
+  background: #f49b21;
+  border-radius: 50%;
+  /* height: 320px; */
+  width: 100%; /*320px */
+  -webkit-animation-name: zoomIn;
+  animation-name: zoomIn;
+  -webkit-animation-duration: .20s;
+  animation-duration: .30s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+.content {
+  position: relative;
+  top: 50px;
+  width: 100%;
+  text-align: center;
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn;
+  -webkit-animation-duration: 1.0s;
+  animation-duration: 1.0s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-delay: 0.6s;
+  animation-delay: 0.5s;
+}
+.splatter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  -webkit-animation-name: zoomIn;
+  animation-name: zoomIn;
+  -webkit-animation-duration: .2s;
+  animation-duration: .2s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both; 
+  -webkit-animation-delay: 0.1s;
+  animation-delay: 0.1s; 
+}
+
+
+@-webkit-keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+@-webkit-keyframes zoomIn {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale3d(.3, .3, .3);
+            transform: scale3d(.3, .3, .3);
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes zoomIn {
+  0% {
+    opacity: 0;
+    -webkit-transform: scale3d(.3, .3, .3);
+            transform: scale3d(.3, .3, .3);
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.zoomIn {
+  -webkit-animation-name: zoomIn;
+          animation-name: zoomIn;
+}
+
+/*Roster Icon Splatter Image */
+
+
 .jumbotron {
-  
+  width: 100%;
+  height: 60vh;
+  background-image: url('https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/HomePage/sf6rosterart.png');
+  /* opacity: 0.85; */
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.feature-box {
+  padding-top: 20px;
+}
+
+.feature-icon {
+  font-size: 35px;
+  color: var(--RX78-blue);
 }
 
 .logo {
@@ -46,6 +184,72 @@ body {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* HOME PAGE */
+
+
+/*FIGHTER PAGE*/
+
+.video-library-section, .user-video-library-section {
+  color: #888888;
+  font-size: 14px;
+  cursor: pointer;
+  order: 2;
+  position: relative;
+}
+
+.user-video-library-section.active, .video-library-section.active {
+  color: #000000;
+  font-size: 25px;
+  cursor: pointer;
+  font-weight: 700;
+  order: 1;
+  position: relative;
+}
+
+/* TESTING */
+
+.player-wrapper {
+  width: auto; 
+  height: auto; 
+}
+
+/* .react-player {
+  padding-top: 56.25%; 
+  margin-top: 56.26%;
+  position: relative; 
+  justify-content: flex-start;
+} */
+
+/* .react-player > div {
+  position: absolute; 
+} */
+
+/* TESTING */
+
+.teddytest  {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0
+}
+
+.teddytest .react-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.seperator {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/*FIGHTER PAGE*/
+.commands-list {
+  justify-content: flex-end;
 }
 
 @media (prefers-reduced-motion: no-preference) {
