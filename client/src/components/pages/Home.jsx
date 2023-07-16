@@ -41,7 +41,7 @@ const Home = () => {
 
   return (
     <div>
-      <div className="jumbotron jumbotron-fluid">
+      <div className="home-jumbotron jumbotron-fluid">
         <Container>
           <h1
             style={{

@@ -147,7 +147,7 @@ body {
 /*Roster Icon Splatter Image */
 
 
-.jumbotron {
+.home-jumbotron {
   width: 100%;
   height: 60vh;
   background-image: url('https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/HomePage/sf6rosterart.png');
@@ -160,6 +160,18 @@ body {
   align-items: center;
 }
 
+.profile-jumbotron {
+  width: 100%;
+  height: 60vh;
+  background-image: url('https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/HomePage/sf6rosterart.png');
+  /* opacity: 0.85; */
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
 
 .feature-box {
   padding-top: 20px;

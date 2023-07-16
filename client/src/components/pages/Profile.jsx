@@ -34,12 +34,38 @@ function Profile() {
   }
 
   return user ? (
+    <>
+    <div className="jumbotron jumbotron-fluid">
+        <Container>
+          <h1
+            style={{
+              color: "#fff",
+              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
+              fontWeight: "700",
+            }}
+          >
+            Welcome to the SF6 Lab Assistant
+          </h1>
+          <h2
+            style={{
+              color: "#fff",
+              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
+              fontWeight: "500",
+            }}
+          >
+            Take your training to the next level{" "}
+          </h2>
+        </Container>
+      </div>
     <Container>
+    <Row>
       <Col>
         <h2>User Profile</h2>
         <h2>{user.username}</h2>
         <h2>{user.email}</h2>
         <p>Member since: {user.created_at}</p>
+      </Col>
+      <Col>
         <h2>Roster:</h2>
         {user.user_characters.map((uc) => (
           <div key={uc.id}>
@@ -49,8 +75,10 @@ function Profile() {
             <button onClick={() => handleDeleteCharacter(uc.id)}>Delete From Roster</button>
           </div>
         ))}
-      </Col>
+        </Col>
+      </Row>
     </Container>
+    </>
   ) : (
     <h2>Please login or signup to view your profile</h2>
   );
