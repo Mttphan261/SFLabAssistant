@@ -21,6 +21,7 @@ class Character(db.Model, SerializerMixin):
     name = db.Column(db.String)
     head_img = db.Column(db.String)
     main_img = db.Column(db.String)
+    bio = db.Column(db.String)
 
     #relationships
     moves = db.relationship('Move', back_populates='character')    

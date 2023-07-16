@@ -21,11 +21,14 @@ def load_characters():
                     character_name = character_data['name']
                     character_head_img = character_data['head_img']
                     character_main_img = character_data['main_img']
+                    character_bio = character_data['bio']
+                    print(character_bio)
 
                     character = Character(
                         name = character_name,
                         head_img = character_head_img,
-                        main_img = character_main_img
+                        main_img = character_main_img,
+                        bio = character_bio
                     )
 
                     db.session.add(character)
@@ -59,7 +62,7 @@ def load_videos():
 
     default_videos = {
         'Marisa': ['E9u9TyC5TU4', 'BZoam-rO1A0'],
-        'Manon': ['QNaLU5Ir-eQ', 'pSuXvrr2KqI'],
+        'Manon': ['5h7m5IEpDko', 'pSuXvrr2KqI'],
         'Jamie': ['B_JELPmJD6w', 'KEUj5BANBrs'],
         'Guile': ['3_3RnvP25fA', 'iGZFz6ZbJRc'],
         'JP': ['UGFPppRCjGc', 'RDXD2s1xryY'],
@@ -98,7 +101,7 @@ def load_videos():
 
 
 def clear_tables():
-    # db.session.query(Character).delete()
+    db.session.query(Character).delete()
     # db.session.query(Move).delete()
     db.session.query(Video).delete()
     db.session.query(UserCharacter).delete()
@@ -109,8 +112,8 @@ if __name__ == "__main__":
         # ipdb.set_trace()
         clear_tables()
         print('Clearing tables...')
-        # # load_characters()
-        # print('Loading characters...')
+        load_characters()
+        print('Loading characters...')
         # # load_moves()
         # print('Loading moves...')
         load_videos()

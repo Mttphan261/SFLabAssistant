@@ -42,6 +42,7 @@ function SignUp() {
 
   return (
     <div>
+    <h2>Signup</h2>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -50,17 +51,17 @@ function SignUp() {
         <Form>
           <div>
             <label htmlFor="email">Email:</label>
-            <Field type="text" name="email" id="email" />
+            <Field type="text" name="email" id="email" className="form-field"/>
             <ErrorMessage name="email" component="div" />
           </div>
           <div>
             <label htmlFor="username">Username:</label>
-            <Field type="text" name="username" id="username" />
+            <Field type="text" name="username" id="username" className="form-field"/>
             <ErrorMessage name="username" component="div" />
           </div>
           <div>
             <label htmlFor="password">Password:</label>
-            <Field type="password" name="password" id="password" />
+            <Field type="password" name="password" id="password" className="form-field"/>
             <ErrorMessage name="password" component="div" />
           </div>
           <div>
@@ -69,6 +70,7 @@ function SignUp() {
               type="password"
               name="confirmPassword"
               id="confirmPassword"
+              className="form-field"
             />
             <ErrorMessage name="confirmPassword" component="div" />
           </div>
