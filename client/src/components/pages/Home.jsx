@@ -43,7 +43,7 @@ const Home = () => {
     <div>
       <div className="jumbotron jumbotron-fluid">
         <Container>
-          <h2
+          <h1
             style={{
               color: "#fff",
               textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
@@ -51,8 +51,8 @@ const Home = () => {
             }}
           >
             Welcome to the SF6 Lab Assistant
-          </h2>
-          <h3
+          </h1>
+          <h2
             style={{
               color: "#fff",
               textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
@@ -60,7 +60,7 @@ const Home = () => {
             }}
           >
             Take your training to the next level{" "}
-          </h3>
+          </h2>
         </Container>
       </div>
       <Container className="featureBanner">
