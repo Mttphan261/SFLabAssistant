@@ -42,41 +42,65 @@ function SignUp() {
 
   return (
     <div>
-    <h2>Signup</h2>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        <Form>
-          <div>
-            <label htmlFor="email">Email:</label>
-            <Field type="text" name="email" id="email" className="form-field"/>
-            <ErrorMessage name="email" component="div" />
-          </div>
-          <div>
-            <label htmlFor="username">Username:</label>
-            <Field type="text" name="username" id="username" className="form-field"/>
-            <ErrorMessage name="username" component="div" />
-          </div>
-          <div>
-            <label htmlFor="password">Password:</label>
-            <Field type="password" name="password" id="password" className="form-field"/>
-            <ErrorMessage name="password" component="div" />
-          </div>
-          <div>
-            <label htmlFor="confirmPassword">Confirm Password:</label>
-            <Field
-              type="password"
-              name="confirmPassword"
-              id="confirmPassword"
-              className="form-field"
-            />
-            <ErrorMessage name="confirmPassword" component="div" />
-          </div>
-          <button type="submit">Submit</button>
-        </Form>
-      </Formik>
+      <Row>
+      <Col md={4} className="signup-image-col">
+        <img 
+          src ="https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/main/.github/imgs/SignupPage/chun%20li%20world%20tour%20crop.png"
+          alt="Signup"
+          className="signup-image"
+        />
+      </Col>
+        <h2>Signup</h2>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          <Form>
+            <div>
+              <label htmlFor="email">Email:</label>
+              <Field
+                type="text"
+                name="email"
+                id="email"
+                className="form-field"
+              />
+              <ErrorMessage name="email" component="div" />
+            </div>
+            <div>
+              <label htmlFor="username">Username:</label>
+              <Field
+                type="text"
+                name="username"
+                id="username"
+                className="form-field"
+              />
+              <ErrorMessage name="username" component="div" />
+            </div>
+            <div>
+              <label htmlFor="password">Password:</label>
+              <Field
+                type="password"
+                name="password"
+                id="password"
+                className="form-field"
+              />
+              <ErrorMessage name="password" component="div" />
+            </div>
+            <div>
+              <label htmlFor="confirmPassword">Confirm Password:</label>
+              <Field
+                type="password"
+                name="confirmPassword"
+                id="confirmPassword"
+                className="form-field"
+              />
+              <ErrorMessage name="confirmPassword" component="div" />
+            </div>
+            <button type="submit">Submit</button>
+          </Form>
+        </Formik>
+      </Row>
     </div>
   );
 }
