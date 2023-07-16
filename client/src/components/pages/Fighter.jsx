@@ -370,8 +370,9 @@ function Fighter() {
             style={{ width: "100%" }}
           />
         </Figure>
-        <Col sm={2}>
+        <Col sm={4}>
           <h1>{fighter.name}</h1>
+          <p>{fighter.bio}</p>
           {user ? (
             isInRoster ? (
               <button disabled>In Roster</button>
