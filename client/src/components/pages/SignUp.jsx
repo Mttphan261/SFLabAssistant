@@ -51,77 +51,88 @@ function SignUp() {
           />
         </Col>
         <Col md={8}>
-            <div className="form-styling">
-              <Col className="test">
-                <h2>Signup</h2>
-                <Formik
-                  initialValues={initialValues}
-                  validationSchema={validationSchema}
-                  onSubmit={handleSubmit}
+          <div className="form-styling">
+            <Col className="test">
+              <h2>Here Comes A New Challenger!</h2>
+              <h5>Sign Up:</h5>
+              <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+              >
+                <Form>
+                  <div className="form-group">
+                    <label htmlFor="email">Email:</label>
+                    <Field
+                      type="text"
+                      name="email"
+                      id="email"
+                      className="form-field form-control"
+                    />
+                    <ErrorMessage
+                      name="email"
+                      component="div"
+                      className="error-message"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="username">Username:</label>
+                    <Field
+                      type="text"
+                      name="username"
+                      id="username"
+                      className="form-field form-control"
+                    />
+                    <ErrorMessage
+                      name="username"
+                      component="div"
+                      className="form-group"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="password">Password:</label>
+                    <Field
+                      type="password"
+                      name="password"
+                      id="password"
+                      className="form-field form-control"
+                    />
+                    <ErrorMessage
+                      name="password"
+                      component="div"
+                      className="form-group"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="confirmPassword">Confirm Password:</label>
+                    <Field
+                      type="password"
+                      name="confirmPassword"
+                      id="confirmPassword"
+                      className="form-field form-control"
+                    />
+                    <ErrorMessage
+                      name="confirmPassword"
+                      component="div"
+                      className="form-group"
+                    />
+                  </div>
+                  <button type="submit">Submit</button>
+                </Form>
+              </Formik>
+              <p>
+                Already a user?
+                <span
+                  style={{ cursor: 
+                  "pointer", 
+                  "margin-left": "30px",}}
+                  onClick={() => navigate("/login")}
                 >
-                  <Form>
-                    <div className="form-group">
-                      <label htmlFor="email">Email:</label>
-                      <Field
-                        type="text"
-                        name="email"
-                        id="email"
-                        className="form-field form-control"
-                      />
-                      <ErrorMessage
-                        name="email"
-                        component="div"
-                        className="error-message"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="username">Username:</label>
-                      <Field
-                        type="text"
-                        name="username"
-                        id="username"
-                        className="form-field form-control"
-                      />
-                      <ErrorMessage
-                        name="username"
-                        component="div"
-                        className="form-group"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="password">Password:</label>
-                      <Field
-                        type="password"
-                        name="password"
-                        id="password"
-                        className="form-field form-control"
-                      />
-                      <ErrorMessage
-                        name="password"
-                        component="div"
-                        className="form-group"
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="confirmPassword">Confirm Password:</label>
-                      <Field
-                        type="password"
-                        name="confirmPassword"
-                        id="confirmPassword"
-                        className="form-field form-control"
-                      />
-                      <ErrorMessage
-                        name="confirmPassword"
-                        component="div"
-                        className="form-group"
-                      />
-                    </div>
-                    <button type="submit">Submit</button>
-                  </Form>
-                </Formik>
-              </Col>
-            </div>
-          {/* </Row> */}
+                  Sign In
+                </span>
+              </p>
+            </Col>
+          </div>
         </Col>
       </Row>
     </div>
