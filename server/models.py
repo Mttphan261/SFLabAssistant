@@ -129,10 +129,11 @@ class UserCharacter(db.Model, SerializerMixin):
     character = db.relationship('Character', back_populates='user_characters')
     videos = db.relationship('Video', back_populates='user_character', cascade="all, delete-orphan")
     training_notes = db.relationship('TrainingNote', back_populates='user_character', cascade="all, delete-orphan")
+    matchups = db.relationship('Matchup', back_populates='user_character', cascade="all,  delete-orphan")
 
     #serialization
     # serialize_rules = ('-user.user_characters', '-character.user_characters', '-videos.user_character')
-    serialize_rules = ('-user.user_characters', '-character.user_characters', '-user_character.user', '-training_notes.user_character')
+    serialize_rules = ('-user.user_characters', '-character.user_characters', '-user_character.user', '-training_notes.user_character', '-matchups.user_character')
 
 
     def __repr__(self):
@@ -182,3 +183,19 @@ class TrainingNote(db.Model, SerializerMixin):
 
     #serialization
     serialize_rules = ('-user', '-user_character',) #had to exclude both user and uc to avoid max recurision
+
+class Matchup(db.Model, SerializerMixin):
+    __tablename__ = 'matchups'
+
+    id=db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    status = db.Column(db.String)
+
+    #FKs
+    user_character_id = db.Column(db.Integer, db.ForeignKey('user_characters.id'))
+
+    #relationships
+    user_character = db.relationship('UserCharacter', back_populates='matchups')
+
+    #serialization
+    serialize_rules = ('-user_character.matchups',)

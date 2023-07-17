@@ -1,6 +1,6 @@
 from app import app
 #import models when created
-from models import db, Character, Move, Video, UserCharacter, TrainingNote
+from models import db, Character, Move, Video, UserCharacter, TrainingNote, Matchup
 import pickle
 import os
 import ipdb
@@ -22,8 +22,7 @@ def load_characters():
                     character_head_img = character_data['head_img']
                     character_main_img = character_data['main_img']
                     character_bio = character_data['bio']
-                    print(character_bio)
-
+                    
                     character = Character(
                         name = character_name,
                         head_img = character_head_img,
@@ -106,6 +105,7 @@ def clear_tables():
     db.session.query(Video).delete()
     db.session.query(UserCharacter).delete()
     db.session.query(TrainingNote).delete()
+    db.session.query(Matchup).delete()
 
 if __name__ == "__main__":
     with app.app_context():
