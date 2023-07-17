@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Row, Col, Container } from "react-bootstrap";
 
-function VideoForm() {
+
+function VideoForm({ handleAddVideo }) {
   const [youtubeLink, setYoutubeLink] = useState("");
   const [videoInfo, setVideoInfo] = useState(null);
   const { name } = useParams();
@@ -47,6 +49,7 @@ function VideoForm() {
             const characterResponse = await fetch(`/api/characters/${name}`)
             const updatedFighter = await characterResponse.json()
             setFighter(updatedFighter)
+            handleAddVideo(video)
             setYoutubeLink("")
         } else {
             console.error('Video submission failed', response.status)
@@ -57,20 +60,24 @@ function VideoForm() {
   }
 
   return (
-    <div>
+    <Row>
       <form onSubmit={handleSubmit}>
-        <label>
+        <label style={{
+          marginRight: '1%',
+          marginBottom: '2%'
+        }}>
           Add video to fighter library:
           <input
             type="text"
             placeholder="Paste YouTube link..."
             value={youtubeLink}
             onChange={(e) => setYoutubeLink(e.target.value)}
+            className="form-control"
           />
         </label>
         <button type="submit">Submit</button>
       </form>
-    </div>
+    </Row>
   );
 }
 
