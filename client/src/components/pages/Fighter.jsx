@@ -25,14 +25,19 @@ function Fighter() {
   const [showMoves, setShowMoves] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
   const [activeSection, setActiveSection] = useState("video library");
+  const [videos, setVideos] = useState([]);
+  const [vidSearch, setVidSearch] = useState("");
+  const [userVidSearch, setUserVidSearch] = useState("");
+  const [userCharacter, setUserCharacter] = useState(null)
 
   useEffect(() => {
     fetch(`/api/characters/${name}`)
       .then((r) => r.json())
       .then((data) => {
         setFighter(data);
+        setVideos(data.videos);
       });
-  }, [name, isInRoster]);
+  }, [name, isInRoster, user]);
 
   useEffect(() => {
     if (user && fighter) {
@@ -49,16 +54,17 @@ function Fighter() {
           const isInRoster = userCharacters.some(
             (uc) => uc.character.name === name
           );
-          setIsInRoster(isInRoster);
+          setIsInRoster(isInRoster)
 
           const uc = userCharacters.find(
             (uc) => uc.character.id === fighter.id
           );
-          console.log(uc);
+          // console.log(uc);
           if (uc) {
-            console.log(uc.videos);
+            setUserCharacter(uc)
             setUserCharacterNotes(uc.training_notes);
             setUserCharacterVids(uc.videos);
+            console.log(userCharacter)
           }
         })
         .catch((error) => {
@@ -78,7 +84,7 @@ function Fighter() {
         body: JSON.stringify({ name }),
       });
       if (response.ok) {
-        setIsInRoster(true);
+        setIsInRoster(true)
       } else {
         console.error("Failed to add character to roster", response.status);
       }
@@ -89,9 +95,9 @@ function Fighter() {
 
   //**** ADD TO USER CHARACTER VIDEO LIBRARY ****/
   const addVideoToUserCharacter = async (videoID) => {
-    const userCharacter = user.user_characters.find(
-      (uc) => uc.character.id === fighter.id
-    );
+    // const userCharacter = user.user_characters.find(
+    //   (uc) => uc.character.id === fighter.id
+    // );
     const vidDetails = fighter.videos.find((vid) => vid.video_id === videoID);
     try {
       const response = await fetch(
@@ -127,9 +133,9 @@ function Fighter() {
   //**** DELETE FROM USER CHARACTER VIDEO LIBRARY ****/
 
   const handleDeleteVideo = async (videoId) => {
-    const userCharacter = user.user_characters.find(
-      (uc) => uc.character.id === fighter.id
-    );
+    // const userCharacter = user.user_characters.find(
+    //   (uc) => uc.character.id === fighter.id
+    // );
     try {
       const response = await fetch(
         `/api/usercharacters/${userCharacter.id}/videos`,
@@ -159,6 +165,40 @@ function Fighter() {
     }
   };
 
+  // ***** SEARCH VIDEO LIBRARY *****
+  function handleVidSearch(e) {
+    setVidSearch(e.target.value);
+  }
+
+  const searchedVids = videos.filter((vid) => {
+    const searchedTitleMatch = vid.title
+      .toLowerCase()
+      .includes(vidSearch.toLowerCase());
+    const searchedDescriptionMatch = vid.title
+      .toLowerCase()
+      .includes(vidSearch.toLowerCase());
+
+    return searchedTitleMatch || searchedDescriptionMatch;
+  });
+  // ***** SEARCH VIDEO LIBRARY *****
+
+  // ***** SEARCH VIDEO LIBRARY *****
+  function handleUserVidSearch(e) {
+    setUserVidSearch(e.target.value);
+  }
+
+  const userSearchedVids = userCharacterVids.filter((vid) => {
+    const searchedTitleMatch = vid.title
+      .toLowerCase()
+      .includes(userVidSearch.toLowerCase());
+    const searchedDescriptionMatch = vid.title
+      .toLowerCase()
+      .includes(userVidSearch.toLowerCase());
+
+    return searchedTitleMatch || searchedDescriptionMatch;
+  });
+  // ***** SEARCH VIDEO LIBRARY *****
+
   //***ADD TO USER CHARACTER TRAINING NOTES ****/
   const handleNoteChange = (e) => {
     setTrainingNote(e.target.value);
@@ -166,9 +206,9 @@ function Fighter() {
 
   const handleSubmitNote = async (e) => {
     e.preventDefault();
-    const userCharacter = user.user_characters.find(
-      (uc) => uc.character.id === fighter.id
-    );
+    // const userCharacter = user.user_characters.find(
+    //   (uc) => uc.character.id === fighter.id
+    // );
     try {
       const response = await fetch(
         `/api/usercharacters/${userCharacter.id}/notes`,
@@ -184,7 +224,10 @@ function Fighter() {
         }
       );
       if (response.ok) {
+        const newNote = await response.json()
+        setUserCharacterNotes((prevNotes) => [...prevNotes, newNote])
         console.log("note added to user character's training notes");
+        setTrainingNote("")
       } else {
         console.error(
           "failed to add note to user character's training notes",
@@ -263,6 +306,7 @@ function Fighter() {
         });
         setUserCharacterNotes(updatedNotes);
         console.log("training note updated");
+        setUpdateNote("")
       } else {
         console.error("Failed to update training note", response.status);
       }
@@ -288,13 +332,18 @@ function Fighter() {
       <>
         <Row>
           {/* ADD VIDEO BAR */}
+          <input
+            type="text"
+            placeholder="Search video library"
+            onChange={(e) => handleVidSearch(e)}
+          ></input>
           {user ? (
             <VideoForm />
           ) : (
             <h2>Login or signup to add to this fighter's video library.</h2>
           )}
           {/* ADD VIDEO BAR */}
-          {fighter.videos.map((video) => (
+          {searchedVids.map((video) => (
             <Row
               key={video.id}
               className="seperator"
@@ -327,7 +376,12 @@ function Fighter() {
     return (
       <>
         <Row>
-          {userCharacterVids.map((video) => (
+          <input
+            type="text"
+            placeholder="Search user video library"
+            onChange={(e) => handleUserVidSearch(e)}
+          ></input>
+          {userSearchedVids.map((video) => (
             <Row
               key={video.id}
               className="seperator"
@@ -370,7 +424,9 @@ function Fighter() {
             style={{ width: "100%" }}
           />
         </Figure>
-        <Col sm={4}>
+        <Col sm={4} style={{
+          marginTop: "10%"
+        }}>
           <h1>{fighter.name}</h1>
           <p>{fighter.bio}</p>
           {user ? (
@@ -424,9 +480,9 @@ function Fighter() {
         </Col>
         <Col sm={6}>
           <Accordion
-            style={{
-              width: "50%",
-            }}
+            // style={{
+            //   width: "50%",
+            // }}
           >
             <Accordion.Item eventKey="0" onClick={toggleNotesVisibility}>
               <Accordion.Header>TRAINING NOTES</Accordion.Header>
@@ -436,8 +492,9 @@ function Fighter() {
                     <tbody>
                       {userCharacterNotes.map((note) => (
                         <tr key={note.id}>
-                          <td>
+                          <td className='note-cell'>
                             {note.note}
+                          </td>
                             {user && (
                               <div>
                                 {updateNoteToggle[note.id] ? (
@@ -453,18 +510,19 @@ function Fighter() {
                                   >
                                     <input
                                       type="text"
+                                      className="form-control"
                                       value={updatedNote}
                                       onChange={(e) =>
                                         setUpdateNote(e.target.value)
                                       }
                                     />
+                                    <button type="submit">
+                                      Update Training Note
+                                    </button>
                                     <button
                                       onClick={() => handleDeleteNote(note.id)}
                                     >
                                       Delete
-                                    </button>
-                                    <button type="submit">
-                                      Update Training Note
                                     </button>
                                     <button
                                       onClick={() =>
@@ -491,7 +549,6 @@ function Fighter() {
                                 )}
                               </div>
                             )}
-                          </td>
                         </tr>
                       ))}
                       <tr>
@@ -500,6 +557,7 @@ function Fighter() {
                           <h3>Add Training Note</h3>
                           <form onSubmit={handleSubmitNote}>
                             <textarea
+                              className="form-control"
                               value={trainingNote}
                               onChange={handleNoteChange}
                             />

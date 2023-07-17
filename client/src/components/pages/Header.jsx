@@ -33,7 +33,7 @@ function Header() {
             {user ? (
               <>
                 <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
-                <Button onClick={handleLogout}>Logout</Button>
+                <Nav.Link as={Link} to="/" onClick={handleLogout}>Logout</Nav.Link>
               </>
             ) : (
               <>

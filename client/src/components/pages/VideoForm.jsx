@@ -47,6 +47,7 @@ function VideoForm() {
             const characterResponse = await fetch(`/api/characters/${name}`)
             const updatedFighter = await characterResponse.json()
             setFighter(updatedFighter)
+            setYoutubeLink("")
         } else {
             console.error('Video submission failed', response.status)
         } 
@@ -59,9 +60,10 @@ function VideoForm() {
     <div>
       <form onSubmit={handleSubmit}>
         <label>
-          YouTube Link:
+          Add video to fighter library:
           <input
             type="text"
+            placeholder="Paste YouTube link..."
             value={youtubeLink}
             onChange={(e) => setYoutubeLink(e.target.value)}
           />

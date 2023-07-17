@@ -5,6 +5,27 @@ import { Row, Col, Container, Image, Card } from "react-bootstrap";
 
 function Profile() {
   const { user, setUser } = useContext(UserContext);
+  const [userCharacter, setUserCharacter] = useState([])
+
+  useEffect(() => {
+    if (user) {
+      fetch("/api/users", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((userData) => {
+          console.log(userData.user_characters)
+          setUserCharacter(userData.user_characters)
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [user]);
+
 
   const handleDeleteCharacter = async (userCharacterId) => {
     try {
@@ -35,46 +56,55 @@ function Profile() {
 
   return user ? (
     <>
-    <div className="jumbotron jumbotron-fluid">
+    <div className="profile-jumbotron jumbotron-fluid">
         <Container>
           <h1
             style={{
               color: "#fff",
               textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
-              fontWeight: "700",
+              fontWeight: "1000",
+              marginBottom: '300px'
             }}
           >
-            Welcome to the SF6 Lab Assistant
+            Welcome back to the lab, {user.username} !
           </h1>
-          <h2
-            style={{
-              color: "#fff",
-              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
-              fontWeight: "500",
-            }}
-          >
-            Take your training to the next level{" "}
-          </h2>
         </Container>
       </div>
     <Container>
-    <Row>
-      <Col>
-        <h2>User Profile</h2>
+    <Row style={{
+        marginTop: "50px",
+        marginBottom: "10px"
+    }}>
+      <Col style={{
+        marginTop: "15%"
+      }}>
         <h2>{user.username}</h2>
         <h2>{user.email}</h2>
         <p>Member since: {user.created_at}</p>
       </Col>
       <Col>
         <h2>Roster:</h2>
-        {user.user_characters.map((uc) => (
-          <div key={uc.id}>
+        <Row className="seperator">
+        {userCharacter.map((uc) => (
+          <Col key={uc.id} md={4} className="seperator">
             <Link to={`/characters/${uc.character.name}`}>
-              {uc.character.name}
+            <Image
+              // className="circle"
+              className="profileRosterIcon"
+              src={uc.character.head_img}
+              alt={uc.character.name}
+            />
             </Link>
-            <button onClick={() => handleDeleteCharacter(uc.id)}>Delete From Roster</button>
-          </div>
+            <Col style={{
+              marginTop: '5px'
+            }}>
+            <button onClick={() => handleDeleteCharacter(uc.id)} style={{
+              padding: "10px",
+            }}>Delete From Roster</button>
+            </Col>
+          </Col>
         ))}
+        </Row>
         </Col>
       </Row>
     </Container>
