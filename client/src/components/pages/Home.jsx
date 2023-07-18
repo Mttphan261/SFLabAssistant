@@ -24,7 +24,6 @@ const Home = () => {
           key={character.id}
         >
           <div className="circle">
-          {/* <Image class="splatter" src="http://static.indigoimages.ca/2015/shop/orange-paint-splatter.png" /> */}
             <Image
               // className="circle"
               className="rosterIcon"
@@ -32,7 +31,10 @@ const Home = () => {
               src={character.head_img}
               alt={character.name}
             />
-          {/* <Image class="splatter" src="http://static.indigoimages.ca/2015/shop/orange-paint-splatter.png"/> */}
+            <Image 
+              className="splatter"
+              src="https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/9088c2605aae9b049aa5789e86d77be1d7ce10d8/.github/imgs/HomePage/InkSplatter.svg"
+            />
           </div>
         </Link>
       </Col>
@@ -40,7 +42,9 @@ const Home = () => {
   });
 
   return (
-    <div>
+    <div style={{
+      marginBottom: "3%"
+    }}>
       <div className="home-jumbotron jumbotron-fluid">
         <Container>
           <h1
