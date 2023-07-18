@@ -29,6 +29,7 @@ function Fighter() {
   const [vidSearch, setVidSearch] = useState("");
   const [userVidSearch, setUserVidSearch] = useState("");
   const [userCharacter, setUserCharacter] = useState(null);
+  const [matchups, setMatchups] = useState([]);
 
   useEffect(() => {
     fetch(`/api/characters/${name}`)
@@ -64,6 +65,7 @@ function Fighter() {
             setUserCharacter(uc);
             setUserCharacterNotes(uc.training_notes);
             setUserCharacterVids(uc.videos);
+            setMatchups(uc.matchups);
             console.log(userCharacter);
           }
         })
@@ -429,6 +431,70 @@ function Fighter() {
   };
   //***** HANDLE ADD TO VIDEO TESTING *****/
 
+  // ***** HANDLE MATCHUP UPDATE *****
+  const updateMatchupStatus = (matchupId, newStatus) => {
+    fetch(`/api/matchups/${matchupId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: newStatus }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        console.log("Matchup updated successfully:", data);
+        const updatedMatchups = matchups.map((mu) => {
+          if (mu.id === matchupId) {
+            return { ...mu, status: newStatus };
+          }
+          return mu;
+        });
+        setMatchups(updatedMatchups);
+      })
+      .catch((error) => {
+        console.error("Error updating matchup:".error);
+      });
+  };
+  // ***** HANDLE MATCHUP UPDATE *****
+
+  // *****HANDLE MATCHUP COLOR*****
+  const getMatchupColor = (status) => {
+    let style = {};
+
+    switch (status) {
+      case "advantage":
+        style.backgroundColor = "lightgreen";
+        break;
+      case "neutral":
+        style.backgroundColor = "white";
+        break;
+      case "disadvantage":
+        style.backgroundColor = "lightcoral";
+        break;
+      default:
+        break;
+    }
+    return style;
+  };
+
+  const getButtonColor = (buttonStatus, matchupStatus) => {
+    if (buttonStatus === matchupStatus) {
+      switch (matchupStatus) {
+        case "disadvantage":
+          return { color: "red" };
+        case "neutral":
+          return { color: "white" };
+        case "advantage":
+          return { color: "green" };
+        default:
+          return { color: "white" };
+      }
+    } else {
+      return { color: "white" };
+    }
+  };
+  // *****HANDLE MATCHUP COLOR*****
+
   return (
     <Container>
       <Row>
@@ -679,74 +745,65 @@ function Fighter() {
           </Accordion> */}
         </Col>
       </Row>
-      {/* <Row xs={1} md={2} className="g-4">
-        {user && (
-          <Card style={{ width: "18rem" }}>
-            <Card.Body>
-              <h3>Add Training Note</h3>
-              <form onSubmit={handleSubmitNote}>
-                <textarea value={trainingNote} onChange={handleNoteChange} />
-                <button type="submit">Submit</button>
-              </form>
-            </Card.Body>
-          </Card>
-        )}
-      </Row> */}
-
-      {/* {userCharacterNotes.map((note) => (
-          <Card key={note.id} style={{ width: "18rem" }}>
-            <Card.Body>
-              <h3>{note.note}</h3>
-              {user && (
-                <div>
-                  {updateNoteToggle[note.id] ? (
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        handleUpdateNote(note.id);
-                        setUpdateNoteToggle((prevToggle) => ({
-                          ...prevToggle,
-                          [note.id]: false,
-                        }));
-                      }}
-                    >
-                      <input
-                        type="text"
-                        value={updatedNote}
-                        onChange={(e) => setUpdateNote(e.target.value)}
-                      />
-                      <button onClick={() => handleDeleteNote(note.id)}>
-                        Delete
-                      </button>
-                      <button type="submit">Update Training Note</button>
-                      <button
-                        onClick={() =>
-                          setUpdateNoteToggle((prevToggle) => ({
-                            ...prevToggle,
-                            [note.id]: false,
-                          }))
-                        }
-                      >
-                        Cancel
-                      </button>
-                    </form>
-                  ) : (
-                    <button
-                      onClick={() =>
-                        setUpdateNoteToggle((prevToggle) => ({
-                          ...prevToggle,
-                          [note.id]: true,
-                        }))
-                      }
-                    >
-                      Update/Delete Training Note
-                    </button>
-                  )}
-                </div>
-              )}
-            </Card.Body>
-          </Card>
-        ))} */}
+      {userCharacter ? (
+        <Col md={6}>
+          <Accordion className="matchups">
+            <Accordion.Item eventKey="0">
+              <Accordion.Header>MATCHUPS</Accordion.Header>
+              <Accordion.Body>
+                <Card>
+                  <Table>
+                    <thead>
+                      <tr>
+                        <th>Fighter</th>
+                        <th>Rating</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {matchups.map((mu) => (
+                        <tr key={mu.id}>
+                          <td style={getMatchupColor(mu.status)}>{mu.name}</td>
+                          <td style={getMatchupColor(mu.status)}>
+                            <button
+                              className="matchup-button"
+                              style={getButtonColor("disadvantage", mu.status)}
+                              onClick={() =>
+                                updateMatchupStatus(mu.id, "disadvantage")
+                              }
+                            >
+                              Disadvantage
+                            </button>
+                            <button
+                              className="matchup-button"
+                              style={getButtonColor("neutral", mu.status)}
+                              onClick={() =>
+                                updateMatchupStatus(mu.id, "neutral")
+                              }
+                            >
+                              Neutral
+                            </button>
+                            <button
+                              className="matchup-button"
+                              style={getButtonColor("advantage", mu.status)}
+                              onClick={() =>
+                                updateMatchupStatus(mu.id, "advantage")
+                              }
+                            >
+                              Advantage
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </Card>
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+        </Col>
+      ) : (
+        <></>
+      )}
       <hr />
       <Row>
         {/* <Col md={2}>
