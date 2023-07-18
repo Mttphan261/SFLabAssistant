@@ -1,6 +1,6 @@
 from app import app
 #import models when created
-from models import db, Character, Move, Video, UserCharacter, TrainingNote, Matchup
+from models import db, Character, Move, Video, UserCharacter, TrainingNote, Matchup, Combo
 import pickle
 import os
 import ipdb
@@ -57,6 +57,30 @@ def load_moves():
 
     db.session.commit()
 
+def load_combos():
+    directory = 'JSON files'
+
+    for filename in os.listdir(directory):
+        if filename.endswith('json'):
+            with open(os.path.join(directory, filename)) as file:
+                data = json.load(file)
+                combo_list = data['combos']
+                for combo_data in combo_list:
+                    combo_name = combo_data['name']
+                    combo_notation = combo_data['notation']
+                    combo_character = combo_data.get('character_id', None)
+
+                    combo = Combo(
+                        name = combo_name,
+                        notation = combo_notation,
+                        character_id = combo_character
+                    )
+
+                    db.session.add(combo)
+
+    db.session.commit()
+
+
 def load_videos():
 
     default_videos = {
@@ -100,22 +124,25 @@ def load_videos():
 
 
 def clear_tables():
-    db.session.query(Character).delete()
+    # db.session.query(Character).delete()
     # db.session.query(Move).delete()
     db.session.query(Video).delete()
     db.session.query(UserCharacter).delete()
     db.session.query(TrainingNote).delete()
     db.session.query(Matchup).delete()
+    db.session.query(Combo).delete()
 
 if __name__ == "__main__":
     with app.app_context():
         # ipdb.set_trace()
         clear_tables()
         print('Clearing tables...')
-        load_characters()
-        print('Loading characters...')
+        # load_characters()
+        # print('Loading characters...')
         # # load_moves()
         # print('Loading moves...')
+        load_combos()
+        print('Loading combos...')
         load_videos()
         print('loading videos...')
         print('Seeding complete!')

@@ -277,7 +277,18 @@ function Fighter() {
   };
 
   if (!fighter) {
-    return <div>Loading...</div>;
+    return (
+      <h1
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        Loading...
+      </h1>
+    );
   }
 
   //***UPDATE USER CHARACTER TRAINING NOTES ****/
@@ -563,6 +574,40 @@ function Fighter() {
           </Accordion>
         </Col>
         <Col sm={6}>
+          <Accordion
+            classname="commands-list"
+            style={{
+              width: "flex",
+            }}
+          >
+            <Accordion.Item eventKey="0" onClick={toggleMovesVisibility}>
+              <Accordion.Header>EXAMPLE COMBOS</Accordion.Header>
+              <Accordion.Body>
+                <Card>
+                  <Table striped border style={{}}>
+                    <thead>
+                      <tr>
+                        <th>Combo</th>
+                        <th>Notation</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {fighter.combos.map((combo) => (
+                        <tr key={combo.id}>
+                          <td>{combo.name}</td>
+                          <td>{combo.notation}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </Card>
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+        </Col>
+      </Row>
+      <Row>
+        <Col sm={6}>
           {userCharacter ? (
             <Accordion>
               <Accordion.Item eventKey="0" onClick={toggleNotesVisibility}>
@@ -651,159 +696,77 @@ function Fighter() {
               </Accordion.Item>
             </Accordion>
           ) : (
-            <h5>Add this fighter to user roster to track training notes</h5>
+            <h5>
+              Add this fighter to user roster to track training notes and
+              matchups
+            </h5>
           )}
-          {/* <Accordion
-          // style={{
-          //   width: "50%",
-          // }}
-          >
-            <Accordion.Item eventKey="0" onClick={toggleNotesVisibility}>
-              <Accordion.Header>TRAINING NOTES</Accordion.Header>
-              <Accordion.Body>
-                <Card>
-                  <Table striped border style={{}}>
-                    <tbody>
-                      {userCharacterNotes.map((note) => (
-                        <tr key={note.id}>
-                          <td className="note-cell">{note.note}</td>
-                          {user && (
-                            <div>
-                              {updateNoteToggle[note.id] ? (
-                                <form
-                                  onSubmit={(e) => {
-                                    e.preventDefault();
-                                    handleUpdateNote(note.id);
-                                    setUpdateNoteToggle((prevToggle) => ({
-                                      ...prevToggle,
-                                      [note.id]: false,
-                                    }));
-                                  }}
-                                >
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    value={updatedNote}
-                                    onChange={(e) =>
-                                      setUpdateNote(e.target.value)
-                                    }
-                                  />
-                                  <button type="submit">
-                                    Update Training Note
-                                  </button>
-                                  <button
-                                    onClick={() => handleDeleteNote(note.id)}
-                                  >
-                                    Delete
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      setUpdateNoteToggle((prevToggle) => ({
-                                        ...prevToggle,
-                                        [note.id]: false,
-                                      }))
-                                    }
-                                  >
-                                    Cancel
-                                  </button>
-                                </form>
-                              ) : (
-                                <button
-                                  onClick={() =>
-                                    setUpdateNoteToggle((prevToggle) => ({
-                                      ...prevToggle,
-                                      [note.id]: true,
-                                    }))
-                                  }
-                                >
-                                  Update/Delete Training Note
-                                </button>
-                              )}
-                            </div>
-                          )}
-                        </tr>
-                      ))}
-                      <tr>
-                        {" "}
-                        <td>
-                          <h3>Add Training Note</h3>
-                          <form onSubmit={handleSubmitNote}>
-                            <textarea
-                              className="form-control"
-                              value={trainingNote}
-                              onChange={handleNoteChange}
-                            />
-                            <button type="submit">Submit</button>
-                          </form>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Card>
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion> */}
         </Col>
+        {userCharacter ? (
+          <Col md={6}>
+            <Accordion className="matchups">
+              <Accordion.Item eventKey="0">
+                <Accordion.Header>MATCHUPS</Accordion.Header>
+                <Accordion.Body>
+                  <Card>
+                    <Table>
+                      <thead>
+                        <tr>
+                          <th>Fighter</th>
+                          <th>Rating</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {matchups.map((mu) => (
+                          <tr key={mu.id}>
+                            <td style={getMatchupColor(mu.status)}>
+                              {mu.name}
+                            </td>
+                            <td style={getMatchupColor(mu.status)}>
+                              <button
+                                className="matchup-button"
+                                style={getButtonColor(
+                                  "disadvantage",
+                                  mu.status
+                                )}
+                                onClick={() =>
+                                  updateMatchupStatus(mu.id, "disadvantage")
+                                }
+                              >
+                                Disadvantage
+                              </button>
+                              <button
+                                className="matchup-button"
+                                style={getButtonColor("neutral", mu.status)}
+                                onClick={() =>
+                                  updateMatchupStatus(mu.id, "neutral")
+                                }
+                              >
+                                Neutral
+                              </button>
+                              <button
+                                className="matchup-button"
+                                style={getButtonColor("advantage", mu.status)}
+                                onClick={() =>
+                                  updateMatchupStatus(mu.id, "advantage")
+                                }
+                              >
+                                Advantage
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </Card>
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
+          </Col>
+        ) : (
+          <></>
+        )}
       </Row>
-      {userCharacter ? (
-        <Col md={6}>
-          <Accordion className="matchups">
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>MATCHUPS</Accordion.Header>
-              <Accordion.Body>
-                <Card>
-                  <Table>
-                    <thead>
-                      <tr>
-                        <th>Fighter</th>
-                        <th>Rating</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {matchups.map((mu) => (
-                        <tr key={mu.id}>
-                          <td style={getMatchupColor(mu.status)}>{mu.name}</td>
-                          <td style={getMatchupColor(mu.status)}>
-                            <button
-                              className="matchup-button"
-                              style={getButtonColor("disadvantage", mu.status)}
-                              onClick={() =>
-                                updateMatchupStatus(mu.id, "disadvantage")
-                              }
-                            >
-                              Disadvantage
-                            </button>
-                            <button
-                              className="matchup-button"
-                              style={getButtonColor("neutral", mu.status)}
-                              onClick={() =>
-                                updateMatchupStatus(mu.id, "neutral")
-                              }
-                            >
-                              Neutral
-                            </button>
-                            <button
-                              className="matchup-button"
-                              style={getButtonColor("advantage", mu.status)}
-                              onClick={() =>
-                                updateMatchupStatus(mu.id, "advantage")
-                              }
-                            >
-                              Advantage
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </Card>
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-        </Col>
-      ) : (
-        <></>
-      )}
       <hr />
       <Row>
         {/* <Col md={2}>
