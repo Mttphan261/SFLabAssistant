@@ -5,7 +5,7 @@ import { Row, Col, Container, Image, Card } from "react-bootstrap";
 
 function Profile() {
   const { user, setUser } = useContext(UserContext);
-  const [userCharacter, setUserCharacter] = useState([])
+  const [userCharacter, setUserCharacter] = useState([]);
 
   useEffect(() => {
     if (user) {
@@ -17,8 +17,8 @@ function Profile() {
       })
         .then((response) => response.json())
         .then((userData) => {
-          console.log(userData.user_characters)
-          setUserCharacter(userData.user_characters)
+          console.log(userData.user_characters);
+          setUserCharacter(userData.user_characters);
         })
         .catch((error) => {
           console.error(error);
@@ -26,13 +26,12 @@ function Profile() {
     }
   }, [user]);
 
-
   const handleDeleteCharacter = async (userCharacterId) => {
     try {
       const response = await fetch(`/api/usercharacters/${userCharacterId}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
       if (response.ok) {
@@ -42,49 +41,85 @@ function Profile() {
             (uc) => uc.id !== userCharacterId
           ),
         }));
-        console.log("Character deleted from user roster")
+        console.log("Character deleted from user roster");
       } else {
         console.error(
-          'Failed to delete character from user roster',
+          "Failed to delete character from user roster",
           response.status
-        )
+        );
       }
     } catch (error) {
       console.error("Failed to delete character from user roster", error);
     }
-  }
+  };
 
   return user ? (
     <>
-    <div className="profile-jumbotron jumbotron-fluid">
+      <div className="profile-jumbotron jumbotron-fluid">
         <Container>
           <h1
             style={{
               color: "#fff",
               textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
               fontWeight: "1000",
-              marginBottom: '300px'
+              marginBottom: "300px",
             }}
           >
             Welcome back to the lab, {user.username} !
           </h1>
         </Container>
       </div>
-    <Container>
-    <Row style={{
-        marginTop: "50px",
-        marginBottom: "10px"
-    }}>
-      <Col style={{
-        marginTop: "15%"
-      }}>
-        <h2>{user.username}</h2>
-        <h2>{user.email}</h2>
-        <p>Member since: {user.created_at}</p>
-      </Col>
-      <Col>
-        <h2>Roster:</h2>
-        <Row className="seperator">
+      <Container>
+        <Row
+          style={{
+            marginTop: "50px",
+            marginBottom: "10px",
+          }}
+        >
+          <Col
+            style={{
+              marginTop: "5%",
+            }}
+          >
+            <h2>{user.username}</h2>
+            <h2>{user.email}</h2>
+            <p>Member since: {user.created_at}</p>
+          </Col>
+          <Col>
+            <h2>Roster:</h2>
+            {userCharacter.length <= 0 ? (
+              <h4>No fighters in your roster</h4>
+            ) : (
+              <Row className="seperator">
+                {userCharacter.map((uc) => (
+                  <Col key={uc.id} md={4} className="seperator">
+                    <Link to={`/characters/${uc.character.name}`}>
+                      <Image
+                        // className="circle"
+                        className="profileRosterIcon"
+                        src={uc.character.head_img}
+                        alt={uc.character.name}
+                      />
+                    </Link>
+                    <Col
+                      style={{
+                        marginTop: "5px",
+                      }}
+                    >
+                      <button
+                        onClick={() => handleDeleteCharacter(uc.id)}
+                        style={{
+                          padding: "10px",
+                        }}
+                      >
+                        Delete From Roster
+                      </button>
+                    </Col>
+                  </Col>
+                ))}
+              </Row>
+            )}
+            {/* <Row className="seperator">
         {userCharacter.map((uc) => (
           <Col key={uc.id} md={4} className="seperator">
             <Link to={`/characters/${uc.character.name}`}>
@@ -104,10 +139,10 @@ function Profile() {
             </Col>
           </Col>
         ))}
+        </Row> */}
+          </Col>
         </Row>
-        </Col>
-      </Row>
-    </Container>
+      </Container>
     </>
   ) : (
     <h2>Please login or signup to view your profile</h2>
