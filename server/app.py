@@ -1,5 +1,5 @@
 from flask_migrate import Migrate
-from models import Character, Move, User, UserCharacter, Video, TrainingNote
+from models import Character, Move, User, UserCharacter, Video, TrainingNote, Matchup
 from flask import Flask, request, session, make_response, jsonify, redirect
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import app, db, api, Resource
@@ -44,6 +44,7 @@ class UserCharacters(Resource):
             name = data['name']
             user = current_user
             character = Character.query.filter_by(name=name).first()
+            characters = Character.query.all()
 
             already_in_roster = UserCharacter.query.filter_by(
                 user_id = user.id,
@@ -59,8 +60,20 @@ class UserCharacters(Resource):
                 is_main = False,
                 is_alt = False
             )
+
+
             db.session.add(new_user_character)
             db.session.commit()
+            
+            for opponent_character in characters:
+                matchup=Matchup(
+                    user_character_id = new_user_character.id,
+                    name = opponent_character.name,
+                    status = 'neutral'
+                )
+                db.session.add(matchup)
+            db.session.commit()
+
             return new_user_character.to_dict(), 201
         
         except Exception as e:
@@ -335,6 +348,27 @@ class TrainingNotes(Resource):
 
 api.add_resource(TrainingNotes, '/usercharacters/<int:user_character_id>/notes')
 
+class Matchups(Resource):
+    @login_required
+    def patch(self, matchup_id):
+        try:
+            matchup = Matchup.query.get(matchup_id)
+
+            if not matchup or matchup.user_character.user_id != current_user.id:
+                return {'error': 'Matchup not found or does not belong to the current user'}, 404
+            
+            data = request.get_json()
+            new_status = data.get('status')
+            matchup.status = new_status
+            db.session.commit()
+
+            return matchup.to_dict(), 200
+        
+        except Exception as e:
+            traceback.print_exc()
+            return {'error': 'Failed to update matchup status', 'message': str(e)}, 500
+
+api.add_resource(Matchups, '/matchups/<int:matchup_id>')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

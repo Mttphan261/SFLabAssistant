@@ -25,14 +25,19 @@ function Fighter() {
   const [showMoves, setShowMoves] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
   const [activeSection, setActiveSection] = useState("video library");
+  const [videos, setVideos] = useState([]);
+  const [vidSearch, setVidSearch] = useState("");
+  const [userVidSearch, setUserVidSearch] = useState("");
+  const [userCharacter, setUserCharacter] = useState(null);
 
   useEffect(() => {
     fetch(`/api/characters/${name}`)
       .then((r) => r.json())
       .then((data) => {
         setFighter(data);
+        setVideos(data.videos);
       });
-  }, [name, isInRoster]);
+  }, [name, isInRoster, user]);
 
   useEffect(() => {
     if (user && fighter) {
@@ -54,11 +59,12 @@ function Fighter() {
           const uc = userCharacters.find(
             (uc) => uc.character.id === fighter.id
           );
-          console.log(uc);
+          // console.log(uc);
           if (uc) {
-            console.log(uc.videos);
+            setUserCharacter(uc);
             setUserCharacterNotes(uc.training_notes);
             setUserCharacterVids(uc.videos);
+            console.log(userCharacter);
           }
         })
         .catch((error) => {
@@ -89,10 +95,10 @@ function Fighter() {
 
   //**** ADD TO USER CHARACTER VIDEO LIBRARY ****/
   const addVideoToUserCharacter = async (videoID) => {
-    const userCharacter = user.user_characters.find(
-      (uc) => uc.character.id === fighter.id
-    );
-    const vidDetails = fighter.videos.find((vid) => vid.video_id === videoID);
+    // const userCharacter = user.user_characters.find(
+    //   (uc) => uc.character.id === fighter.id
+    // );
+    const vidDetails = videos.find((vid) => vid.video_id === videoID);
     try {
       const response = await fetch(
         `/api/usercharacters/${userCharacter.id}/videos`,
@@ -127,9 +133,9 @@ function Fighter() {
   //**** DELETE FROM USER CHARACTER VIDEO LIBRARY ****/
 
   const handleDeleteVideo = async (videoId) => {
-    const userCharacter = user.user_characters.find(
-      (uc) => uc.character.id === fighter.id
-    );
+    // const userCharacter = user.user_characters.find(
+    //   (uc) => uc.character.id === fighter.id
+    // );
     try {
       const response = await fetch(
         `/api/usercharacters/${userCharacter.id}/videos`,
@@ -159,6 +165,40 @@ function Fighter() {
     }
   };
 
+  // ***** SEARCH VIDEO LIBRARY *****
+  function handleVidSearch(e) {
+    setVidSearch(e.target.value);
+  }
+
+  const searchedVids = videos.filter((vid) => {
+    const searchedTitleMatch = vid.title
+      .toLowerCase()
+      .includes(vidSearch.toLowerCase());
+    const searchedDescriptionMatch = vid.title
+      .toLowerCase()
+      .includes(vidSearch.toLowerCase());
+
+    return searchedTitleMatch || searchedDescriptionMatch;
+  });
+  // ***** SEARCH VIDEO LIBRARY *****
+
+  // ***** SEARCH VIDEO LIBRARY *****
+  function handleUserVidSearch(e) {
+    setUserVidSearch(e.target.value);
+  }
+
+  const userSearchedVids = userCharacterVids.filter((vid) => {
+    const searchedTitleMatch = vid.title
+      .toLowerCase()
+      .includes(userVidSearch.toLowerCase());
+    const searchedDescriptionMatch = vid.title
+      .toLowerCase()
+      .includes(userVidSearch.toLowerCase());
+
+    return searchedTitleMatch || searchedDescriptionMatch;
+  });
+  // ***** SEARCH VIDEO LIBRARY *****
+
   //***ADD TO USER CHARACTER TRAINING NOTES ****/
   const handleNoteChange = (e) => {
     setTrainingNote(e.target.value);
@@ -166,9 +206,9 @@ function Fighter() {
 
   const handleSubmitNote = async (e) => {
     e.preventDefault();
-    const userCharacter = user.user_characters.find(
-      (uc) => uc.character.id === fighter.id
-    );
+    // const userCharacter = user.user_characters.find(
+    //   (uc) => uc.character.id === fighter.id
+    // );
     try {
       const response = await fetch(
         `/api/usercharacters/${userCharacter.id}/notes`,
@@ -184,7 +224,10 @@ function Fighter() {
         }
       );
       if (response.ok) {
+        const newNote = await response.json();
+        setUserCharacterNotes((prevNotes) => [...prevNotes, newNote]);
         console.log("note added to user character's training notes");
+        setTrainingNote("");
       } else {
         console.error(
           "failed to add note to user character's training notes",
@@ -263,6 +306,7 @@ function Fighter() {
         });
         setUserCharacterNotes(updatedNotes);
         console.log("training note updated");
+        setUpdateNote("");
       } else {
         console.error("Failed to update training note", response.status);
       }
@@ -287,14 +331,18 @@ function Fighter() {
     return (
       <>
         <Row>
-          {/* ADD VIDEO BAR */}
           {user ? (
-            <VideoForm />
+            <VideoForm handleAddVideo={handleAddVideo} />
           ) : (
             <h2>Login or signup to add to this fighter's video library.</h2>
           )}
-          {/* ADD VIDEO BAR */}
-          {fighter.videos.map((video) => (
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search video library"
+            onChange={(e) => handleVidSearch(e)}
+          ></input>
+          {searchedVids.map((video) => (
             <Row
               key={video.id}
               className="seperator"
@@ -327,7 +375,12 @@ function Fighter() {
     return (
       <>
         <Row>
-          {userCharacterVids.map((video) => (
+          <input
+            type="text"
+            placeholder="Search user video library"
+            onChange={(e) => handleUserVidSearch(e)}
+          ></input>
+          {userSearchedVids.map((video) => (
             <Row
               key={video.id}
               className="seperator"
@@ -360,6 +413,22 @@ function Fighter() {
   //   Delete From Your Library
   // </button>
 
+  //***** HANDLE ADD TO VIDEO TESTING *****/
+  const handleAddVideo = async (newVideo) => {
+    try {
+      const response = await fetch(`/api/characters/${name}`);
+      if (response.ok) {
+        const updatedFighter = await response.json();
+        setVideos(updatedFighter.videos);
+      } else {
+        console.error("Failed to fetch updated videos", response.status);
+      }
+    } catch (error) {
+      console.error("Failed to fetch updated videos", error);
+    }
+  };
+  //***** HANDLE ADD TO VIDEO TESTING *****/
+
   return (
     <Container>
       <Row>
@@ -370,7 +439,12 @@ function Fighter() {
             style={{ width: "100%" }}
           />
         </Figure>
-        <Col sm={4}>
+        <Col
+          sm={4}
+          style={{
+            marginTop: "10%",
+          }}
+        >
           <h1>{fighter.name}</h1>
           <p>{fighter.bio}</p>
           {user ? (
@@ -423,21 +497,17 @@ function Fighter() {
           </Accordion>
         </Col>
         <Col sm={6}>
-          <Accordion
-            style={{
-              width: "50%",
-            }}
-          >
-            <Accordion.Item eventKey="0" onClick={toggleNotesVisibility}>
-              <Accordion.Header>TRAINING NOTES</Accordion.Header>
-              <Accordion.Body>
-                <Card>
-                  <Table striped border style={{}}>
-                    <tbody>
-                      {userCharacterNotes.map((note) => (
-                        <tr key={note.id}>
-                          <td>
-                            {note.note}
+          {userCharacter ? (
+            <Accordion>
+              <Accordion.Item eventKey="0" onClick={toggleNotesVisibility}>
+                <Accordion.Header>TRAINING NOTES</Accordion.Header>
+                <Accordion.Body>
+                  <Card>
+                    <Table striped border style={{}}>
+                      <tbody>
+                        {userCharacterNotes.map((note) => (
+                          <tr key={note.id}>
+                            <td className="note-cell">{note.note}</td>
                             {user && (
                               <div>
                                 {updateNoteToggle[note.id] ? (
@@ -453,18 +523,19 @@ function Fighter() {
                                   >
                                     <input
                                       type="text"
+                                      className="form-control"
                                       value={updatedNote}
                                       onChange={(e) =>
                                         setUpdateNote(e.target.value)
                                       }
                                     />
+                                    <button type="submit">
+                                      Update Training Note
+                                    </button>
                                     <button
                                       onClick={() => handleDeleteNote(note.id)}
                                     >
                                       Delete
-                                    </button>
-                                    <button type="submit">
-                                      Update Training Note
                                     </button>
                                     <button
                                       onClick={() =>
@@ -491,7 +562,99 @@ function Fighter() {
                                 )}
                               </div>
                             )}
+                          </tr>
+                        ))}
+                        <tr>
+                          {" "}
+                          <td>
+                            <h3>Add Training Note</h3>
+                            <form onSubmit={handleSubmitNote}>
+                              <textarea
+                                className="form-control"
+                                value={trainingNote}
+                                onChange={handleNoteChange}
+                              />
+                              <button type="submit">Submit</button>
+                            </form>
                           </td>
+                        </tr>
+                      </tbody>
+                    </Table>
+                  </Card>
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
+          ) : (
+            <h5>Add this fighter to user roster to track training notes</h5>
+          )}
+          {/* <Accordion
+          // style={{
+          //   width: "50%",
+          // }}
+          >
+            <Accordion.Item eventKey="0" onClick={toggleNotesVisibility}>
+              <Accordion.Header>TRAINING NOTES</Accordion.Header>
+              <Accordion.Body>
+                <Card>
+                  <Table striped border style={{}}>
+                    <tbody>
+                      {userCharacterNotes.map((note) => (
+                        <tr key={note.id}>
+                          <td className="note-cell">{note.note}</td>
+                          {user && (
+                            <div>
+                              {updateNoteToggle[note.id] ? (
+                                <form
+                                  onSubmit={(e) => {
+                                    e.preventDefault();
+                                    handleUpdateNote(note.id);
+                                    setUpdateNoteToggle((prevToggle) => ({
+                                      ...prevToggle,
+                                      [note.id]: false,
+                                    }));
+                                  }}
+                                >
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    value={updatedNote}
+                                    onChange={(e) =>
+                                      setUpdateNote(e.target.value)
+                                    }
+                                  />
+                                  <button type="submit">
+                                    Update Training Note
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteNote(note.id)}
+                                  >
+                                    Delete
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      setUpdateNoteToggle((prevToggle) => ({
+                                        ...prevToggle,
+                                        [note.id]: false,
+                                      }))
+                                    }
+                                  >
+                                    Cancel
+                                  </button>
+                                </form>
+                              ) : (
+                                <button
+                                  onClick={() =>
+                                    setUpdateNoteToggle((prevToggle) => ({
+                                      ...prevToggle,
+                                      [note.id]: true,
+                                    }))
+                                  }
+                                >
+                                  Update/Delete Training Note
+                                </button>
+                              )}
+                            </div>
+                          )}
                         </tr>
                       ))}
                       <tr>
@@ -500,6 +663,7 @@ function Fighter() {
                           <h3>Add Training Note</h3>
                           <form onSubmit={handleSubmitNote}>
                             <textarea
+                              className="form-control"
                               value={trainingNote}
                               onChange={handleNoteChange}
                             />
@@ -512,7 +676,7 @@ function Fighter() {
                 </Card>
               </Accordion.Body>
             </Accordion.Item>
-          </Accordion>
+          </Accordion> */}
         </Col>
       </Row>
       {/* <Row xs={1} md={2} className="g-4">
@@ -585,7 +749,7 @@ function Fighter() {
         ))} */}
       <hr />
       <Row>
-        <Col md={2}>
+        {/* <Col md={2}>
           <h2
             onClick={() => switchView("video library")}
             className={
@@ -608,7 +772,53 @@ function Fighter() {
           >
             User Video Library
           </h2>
-        </Col>
+        </Col> */}
+        {userCharacter ? (
+          <>
+            <Col md={2}>
+              <h2
+                onClick={() => switchView("video library")}
+                className={
+                  activeSection === "video library"
+                    ? "video-library-section active"
+                    : "video-library-section"
+                }
+              >
+                Fighter Video Library
+              </h2>
+            </Col>
+            <Col md={2}>
+              <h2
+                onClick={() => switchView("user video library")}
+                className={
+                  activeSection === "user video library"
+                    ? "video-library-section active"
+                    : "video-library-section"
+                }
+              >
+                User Video Library
+              </h2>
+            </Col>
+          </>
+        ) : (
+          <>
+            <Col md={2}>
+              <h2
+                onClick={() => switchView("video library")}
+                className={
+                  activeSection === "video library"
+                    ? "video-library-section active"
+                    : "video-library-section"
+                }
+              >
+                Fighter Video Library
+              </h2>
+            </Col>
+            <Col md={2}>
+              <h5>Add this fighter to your roster to save videos</h5>
+            </Col>
+          </>
+        )}
       </Row>
       <hr />
       <div>
