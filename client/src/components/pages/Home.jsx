@@ -16,6 +16,7 @@ const Home = () => {
       });
   }, []);
 
+
   const characterDisplay = characters.map((character) => {
     return (
       <Col md={2}>

@@ -8,6 +8,8 @@ function VideoForm({ handleAddVideo }) {
   const [videoInfo, setVideoInfo] = useState(null);
   const { name } = useParams();
   const [fighter, setFighter] = useState(null);
+  const [videoError, setVideoError] = useState(null);
+
 
   useEffect(() => {
     fetch(`/api/characters/${name}`)
@@ -16,6 +18,19 @@ function VideoForm({ handleAddVideo }) {
         setFighter(data);
       });
   }, [name]);
+
+  useEffect(() => {
+    let alertTimeout;
+
+    if (videoInfo) {
+      alertTimeout = setTimeout(() => {
+        setVideoInfo(null);
+        setVideoError(null);
+      }, 5000);
+
+      return () => clearTimeout(alertTimeout)
+    }
+  }, [videoInfo])
 
   const getYoutubeVideo = (videoLink) => {
     const url = new URL(videoLink);
@@ -50,12 +65,15 @@ function VideoForm({ handleAddVideo }) {
             const updatedFighter = await characterResponse.json()
             setFighter(updatedFighter)
             handleAddVideo(video)
+            setVideoInfo(video)
             setYoutubeLink("")
         } else {
             console.error('Video submission failed', response.status)
+            setVideoError(true)
         } 
     } catch (error) {
         console.error('Video submission failed:', error)
+        setVideoError(true)
     }
   }
 
@@ -77,6 +95,16 @@ function VideoForm({ handleAddVideo }) {
         </label>
         <button type="submit">Submit</button>
       </form>
+      {videoInfo && (
+        <div className="alert alert-success" role="alert">
+          Video added to the fighter library.
+        </div>
+      )}
+      {videoError && (
+        <div className="alert-alert-danger" role="alert">
+          Failed to add video - make sure it is a valid YouTube link.
+        </div>
+      )}
     </Row>
   );
 }

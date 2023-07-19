@@ -31,6 +31,7 @@ function Fighter() {
   const [userCharacter, setUserCharacter] = useState(null);
   const [matchups, setMatchups] = useState([]);
 
+
   useEffect(() => {
     fetch(`/api/characters/${name}`)
       .then((r) => r.json())
@@ -39,6 +40,11 @@ function Fighter() {
         setVideos(data.videos);
       });
   }, [name, isInRoster, user]);
+
+  //**SCROLL WINDOW TO TOP ***/
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     if (user && fighter) {
@@ -135,9 +141,14 @@ function Fighter() {
   //**** DELETE FROM USER CHARACTER VIDEO LIBRARY ****/
 
   const handleDeleteVideo = async (videoId) => {
-    // const userCharacter = user.user_characters.find(
-    //   (uc) => uc.character.id === fighter.id
-    // );
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this video from your library?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
       const response = await fetch(
         `/api/usercharacters/${userCharacter.id}/videos`,
@@ -247,9 +258,6 @@ function Fighter() {
   //***DELETE FROM USER CHARACTER TRAINING NOTES ****/
 
   const handleDeleteNote = async (noteId) => {
-    const userCharacter = user.user_characters.find(
-      (uc) => uc.character.id === fighter.id
-    );
     try {
       const response = await fetch(
         `/api/usercharacters/${userCharacter.id}/notes`,
@@ -293,9 +301,9 @@ function Fighter() {
 
   //***UPDATE USER CHARACTER TRAINING NOTES ****/
   const handleUpdateNote = async (noteId) => {
-    const userCharacter = user.user_characters.find(
-      (uc) => uc.character.id === fighter.id
-    );
+    // const userCharacter = user.user_characters.find(
+    //   (uc) => uc.character.id === fighter.id
+    // );
     try {
       const response = await fetch(
         `/api/usercharacters/${userCharacter.id}/notes`,
@@ -340,6 +348,7 @@ function Fighter() {
     setActiveSection(section);
   };
 
+
   const renderVideoLibrary = () => {
     return (
       <>
@@ -349,12 +358,14 @@ function Fighter() {
           ) : (
             <h2>Login or signup to add to this fighter's video library.</h2>
           )}
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search video library"
-            onChange={(e) => handleVidSearch(e)}
-          ></input>
+          <div>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search video library"
+              onChange={(e) => handleVidSearch(e)}
+            ></input>
+          </div>
           {searchedVids.map((video) => (
             <Row
               key={video.id}
@@ -373,8 +384,17 @@ function Fighter() {
               </Col>
               <Col sm={6}>
                 <h2>{video.title}</h2>
-                <button onClick={() => addVideoToUserCharacter(video.video_id)}>
-                  Add video to your video library
+                <button
+                  onClick={() => addVideoToUserCharacter(video.video_id)}
+                  disabled={userCharacterVids.some(
+                    (vid) => vid.video_id === video.video_id
+                  )}
+                >
+                  {userCharacterVids.some(
+                    (vid) => vid.video_id === video.video_id
+                  )
+                    ? "In your video library"
+                    : "Add video to your video library"}
                 </button>
               </Col>
             </Row>
@@ -390,6 +410,7 @@ function Fighter() {
         <Row>
           <input
             type="text"
+            className="form-control"
             placeholder="Search user video library"
             onChange={(e) => handleUserVidSearch(e)}
           ></input>
@@ -430,11 +451,15 @@ function Fighter() {
   const handleAddVideo = async (newVideo) => {
     try {
       const response = await fetch(`/api/characters/${name}`);
-      if (response.ok) {
+      if (response.status >= 200 && response.status < 300) {
         const updatedFighter = await response.json();
         setVideos(updatedFighter.videos);
+        // showAlert("Video added to fighter library.")
       } else {
         console.error("Failed to fetch updated videos", response.status);
+        showAlert(
+          "Failed to add video - make sure it is a valid YouTube link!"
+        );
       }
     } catch (error) {
       console.error("Failed to fetch updated videos", error);
@@ -550,7 +575,7 @@ function Fighter() {
           >
             <Accordion.Item eventKey="0" onClick={toggleMovesVisibility}>
               <Accordion.Header>COMMAND LIST</Accordion.Header>
-              <Accordion.Body>
+              <Accordion.Body classname="accordion-body">
                 <Card>
                   <Table striped border style={{}}>
                     <thead>
@@ -676,7 +701,6 @@ function Fighter() {
                           </tr>
                         ))}
                         <tr>
-                          {" "}
                           <td>
                             <h3>Add Training Note</h3>
                             <form onSubmit={handleSubmitNote}>
