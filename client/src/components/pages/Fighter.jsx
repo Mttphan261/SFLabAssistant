@@ -31,7 +31,6 @@ function Fighter() {
   const [userCharacter, setUserCharacter] = useState(null);
   const [matchups, setMatchups] = useState([]);
 
-
   useEffect(() => {
     fetch(`/api/characters/${name}`)
       .then((r) => r.json())
@@ -80,6 +79,11 @@ function Fighter() {
         });
     }
   }, [user, name, fighter, isInRoster]);
+
+  useEffect(() => {
+    setVidSearch("");
+    setUserVidSearch("");
+  }, [activeSection]);
 
   //**** ADD TO USER ROSTER ****/
   const addToRoster = async () => {
@@ -348,7 +352,6 @@ function Fighter() {
     setActiveSection(section);
   };
 
-
   const renderVideoLibrary = () => {
     return (
       <>
@@ -364,41 +367,46 @@ function Fighter() {
               className="form-control"
               placeholder="Search video library"
               onChange={(e) => handleVidSearch(e)}
+              value={vidSearch}
             ></input>
           </div>
-          {searchedVids.map((video) => (
-            <Row
-              key={video.id}
-              className="seperator"
-              style={{
-                border: "1px solid black",
-              }}
-            >
-              <Col sm={6}>
-                <div className="teddytest">
-                  <ReactPlayer
-                    className="react-player"
-                    url={video.embed_html}
-                  />
-                </div>
-              </Col>
-              <Col sm={6}>
-                <h2>{video.title}</h2>
-                <button
-                  onClick={() => addVideoToUserCharacter(video.video_id)}
-                  disabled={userCharacterVids.some(
-                    (vid) => vid.video_id === video.video_id
-                  )}
-                >
-                  {userCharacterVids.some(
-                    (vid) => vid.video_id === video.video_id
-                  )
-                    ? "In your video library"
-                    : "Add video to your video library"}
-                </button>
-              </Col>
-            </Row>
-          ))}
+          {searchedVids.length === 0 ? (
+            <h3>No videos found for your search.</h3>
+          ) : (
+            searchedVids.map((video) => (
+              <Row
+                key={video.id}
+                className="seperator"
+                style={{
+                  border: "1px solid black",
+                }}
+              >
+                <Col sm={6}>
+                  <div className="teddytest">
+                    <ReactPlayer
+                      className="react-player"
+                      url={video.embed_html}
+                    />
+                  </div>
+                </Col>
+                <Col sm={6}>
+                  <h2>{video.title}</h2>
+                  <button
+                    onClick={() => addVideoToUserCharacter(video.video_id)}
+                    disabled={userCharacterVids.some(
+                      (vid) => vid.video_id === video.video_id
+                    )}
+                  >
+                    {userCharacterVids.some(
+                      (vid) => vid.video_id === video.video_id
+                    )
+                      ? "In your video library"
+                      : "Add video to your video library"}
+                  </button>
+                </Col>
+              </Row>
+            ))
+          )}
         </Row>
       </>
     );
@@ -413,6 +421,7 @@ function Fighter() {
             className="form-control"
             placeholder="Search user video library"
             onChange={(e) => handleUserVidSearch(e)}
+            value={userVidSearch}
           ></input>
           {userSearchedVids.map((video) => (
             <Row
