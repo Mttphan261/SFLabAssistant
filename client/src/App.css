@@ -290,9 +290,24 @@ body {
   justify-content: flex-end;
 }
 
+.accordion-body {
+  max-height: 450px;
+  overflow-y:auto;
+}
+
 .note-cell {
   word-break: break-word;
 }
+
+/* .fixed-search-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  z-index: 999; 
+  padding: 10px; 
+} */
 
 /*SIGNUP */
 .form-field {

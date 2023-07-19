@@ -40,6 +40,11 @@ function Fighter() {
       });
   }, [name, isInRoster, user]);
 
+  //**SCROLL WINDOW TO TOP ***/
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     if (user && fighter) {
       fetch("/api/users", {
@@ -74,6 +79,11 @@ function Fighter() {
         });
     }
   }, [user, name, fighter, isInRoster]);
+
+  useEffect(() => {
+    setVidSearch("");
+    setUserVidSearch("");
+  }, [activeSection]);
 
   //**** ADD TO USER ROSTER ****/
   const addToRoster = async () => {
@@ -135,9 +145,14 @@ function Fighter() {
   //**** DELETE FROM USER CHARACTER VIDEO LIBRARY ****/
 
   const handleDeleteVideo = async (videoId) => {
-    // const userCharacter = user.user_characters.find(
-    //   (uc) => uc.character.id === fighter.id
-    // );
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this video from your library?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
       const response = await fetch(
         `/api/usercharacters/${userCharacter.id}/videos`,
@@ -247,9 +262,6 @@ function Fighter() {
   //***DELETE FROM USER CHARACTER TRAINING NOTES ****/
 
   const handleDeleteNote = async (noteId) => {
-    const userCharacter = user.user_characters.find(
-      (uc) => uc.character.id === fighter.id
-    );
     try {
       const response = await fetch(
         `/api/usercharacters/${userCharacter.id}/notes`,
@@ -277,14 +289,25 @@ function Fighter() {
   };
 
   if (!fighter) {
-    return <div>Loading...</div>;
+    return (
+      <h1
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        Loading...
+      </h1>
+    );
   }
 
   //***UPDATE USER CHARACTER TRAINING NOTES ****/
   const handleUpdateNote = async (noteId) => {
-    const userCharacter = user.user_characters.find(
-      (uc) => uc.character.id === fighter.id
-    );
+    // const userCharacter = user.user_characters.find(
+    //   (uc) => uc.character.id === fighter.id
+    // );
     try {
       const response = await fetch(
         `/api/usercharacters/${userCharacter.id}/notes`,
@@ -338,36 +361,52 @@ function Fighter() {
           ) : (
             <h2>Login or signup to add to this fighter's video library.</h2>
           )}
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search video library"
-            onChange={(e) => handleVidSearch(e)}
-          ></input>
-          {searchedVids.map((video) => (
-            <Row
-              key={video.id}
-              className="seperator"
-              style={{
-                border: "1px solid black",
-              }}
-            >
-              <Col sm={6}>
-                <div className="teddytest">
-                  <ReactPlayer
-                    className="react-player"
-                    url={video.embed_html}
-                  />
-                </div>
-              </Col>
-              <Col sm={6}>
-                <h2>{video.title}</h2>
-                <button onClick={() => addVideoToUserCharacter(video.video_id)}>
-                  Add video to your video library
-                </button>
-              </Col>
-            </Row>
-          ))}
+          <div>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search video library"
+              onChange={(e) => handleVidSearch(e)}
+              value={vidSearch}
+            ></input>
+          </div>
+          {searchedVids.length === 0 ? (
+            <h3>No videos found for your search.</h3>
+          ) : (
+            searchedVids.map((video) => (
+              <Row
+                key={video.id}
+                className="seperator"
+                style={{
+                  border: "1px solid black",
+                }}
+              >
+                <Col sm={6}>
+                  <div className="teddytest">
+                    <ReactPlayer
+                      className="react-player"
+                      url={video.embed_html}
+                    />
+                  </div>
+                </Col>
+                <Col sm={6}>
+                  <h2>{video.title}</h2>
+                  <button
+                    onClick={() => addVideoToUserCharacter(video.video_id)}
+                    disabled={userCharacterVids.some(
+                      (vid) => vid.video_id === video.video_id
+                    )}
+                  >
+                    {userCharacterVids.some(
+                      (vid) => vid.video_id === video.video_id
+                    )
+                      ? "In your video library"
+                      : "Add video to your video library"}
+                  </button>
+                </Col>
+              </Row>
+            ))
+          )}
         </Row>
       </>
     );
@@ -379,8 +418,10 @@ function Fighter() {
         <Row>
           <input
             type="text"
+            className="form-control"
             placeholder="Search user video library"
             onChange={(e) => handleUserVidSearch(e)}
+            value={userVidSearch}
           ></input>
           {userSearchedVids.map((video) => (
             <Row
@@ -419,11 +460,15 @@ function Fighter() {
   const handleAddVideo = async (newVideo) => {
     try {
       const response = await fetch(`/api/characters/${name}`);
-      if (response.ok) {
+      if (response.status >= 200 && response.status < 300) {
         const updatedFighter = await response.json();
         setVideos(updatedFighter.videos);
+        // showAlert("Video added to fighter library.")
       } else {
         console.error("Failed to fetch updated videos", response.status);
+        showAlert(
+          "Failed to add video - make sure it is a valid YouTube link!"
+        );
       }
     } catch (error) {
       console.error("Failed to fetch updated videos", error);
@@ -539,7 +584,7 @@ function Fighter() {
           >
             <Accordion.Item eventKey="0" onClick={toggleMovesVisibility}>
               <Accordion.Header>COMMAND LIST</Accordion.Header>
-              <Accordion.Body>
+              <Accordion.Body classname="accordion-body">
                 <Card>
                   <Table striped border style={{}}>
                     <thead>
@@ -562,6 +607,40 @@ function Fighter() {
             </Accordion.Item>
           </Accordion>
         </Col>
+        <Col sm={6}>
+          <Accordion
+            classname="commands-list"
+            style={{
+              width: "flex",
+            }}
+          >
+            <Accordion.Item eventKey="0" onClick={toggleMovesVisibility}>
+              <Accordion.Header>EXAMPLE COMBOS</Accordion.Header>
+              <Accordion.Body>
+                <Card>
+                  <Table striped border style={{}}>
+                    <thead>
+                      <tr>
+                        <th>Combo</th>
+                        <th>Notation</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {fighter.combos.map((combo) => (
+                        <tr key={combo.id}>
+                          <td>{combo.name}</td>
+                          <td>{combo.notation}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </Card>
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+        </Col>
+      </Row>
+      <Row>
         <Col sm={6}>
           {userCharacter ? (
             <Accordion>
@@ -631,7 +710,6 @@ function Fighter() {
                           </tr>
                         ))}
                         <tr>
-                          {" "}
                           <td>
                             <h3>Add Training Note</h3>
                             <form onSubmit={handleSubmitNote}>
@@ -651,159 +729,77 @@ function Fighter() {
               </Accordion.Item>
             </Accordion>
           ) : (
-            <h5>Add this fighter to user roster to track training notes</h5>
+            <h5>
+              Add this fighter to user roster to track training notes and
+              matchups
+            </h5>
           )}
-          {/* <Accordion
-          // style={{
-          //   width: "50%",
-          // }}
-          >
-            <Accordion.Item eventKey="0" onClick={toggleNotesVisibility}>
-              <Accordion.Header>TRAINING NOTES</Accordion.Header>
-              <Accordion.Body>
-                <Card>
-                  <Table striped border style={{}}>
-                    <tbody>
-                      {userCharacterNotes.map((note) => (
-                        <tr key={note.id}>
-                          <td className="note-cell">{note.note}</td>
-                          {user && (
-                            <div>
-                              {updateNoteToggle[note.id] ? (
-                                <form
-                                  onSubmit={(e) => {
-                                    e.preventDefault();
-                                    handleUpdateNote(note.id);
-                                    setUpdateNoteToggle((prevToggle) => ({
-                                      ...prevToggle,
-                                      [note.id]: false,
-                                    }));
-                                  }}
-                                >
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    value={updatedNote}
-                                    onChange={(e) =>
-                                      setUpdateNote(e.target.value)
-                                    }
-                                  />
-                                  <button type="submit">
-                                    Update Training Note
-                                  </button>
-                                  <button
-                                    onClick={() => handleDeleteNote(note.id)}
-                                  >
-                                    Delete
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      setUpdateNoteToggle((prevToggle) => ({
-                                        ...prevToggle,
-                                        [note.id]: false,
-                                      }))
-                                    }
-                                  >
-                                    Cancel
-                                  </button>
-                                </form>
-                              ) : (
-                                <button
-                                  onClick={() =>
-                                    setUpdateNoteToggle((prevToggle) => ({
-                                      ...prevToggle,
-                                      [note.id]: true,
-                                    }))
-                                  }
-                                >
-                                  Update/Delete Training Note
-                                </button>
-                              )}
-                            </div>
-                          )}
-                        </tr>
-                      ))}
-                      <tr>
-                        {" "}
-                        <td>
-                          <h3>Add Training Note</h3>
-                          <form onSubmit={handleSubmitNote}>
-                            <textarea
-                              className="form-control"
-                              value={trainingNote}
-                              onChange={handleNoteChange}
-                            />
-                            <button type="submit">Submit</button>
-                          </form>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </Card>
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion> */}
         </Col>
+        {userCharacter ? (
+          <Col md={6}>
+            <Accordion className="matchups">
+              <Accordion.Item eventKey="0">
+                <Accordion.Header>MATCHUPS</Accordion.Header>
+                <Accordion.Body>
+                  <Card>
+                    <Table>
+                      <thead>
+                        <tr>
+                          <th>Fighter</th>
+                          <th>Rating</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {matchups.map((mu) => (
+                          <tr key={mu.id}>
+                            <td style={getMatchupColor(mu.status)}>
+                              {mu.name}
+                            </td>
+                            <td style={getMatchupColor(mu.status)}>
+                              <button
+                                className="matchup-button"
+                                style={getButtonColor(
+                                  "disadvantage",
+                                  mu.status
+                                )}
+                                onClick={() =>
+                                  updateMatchupStatus(mu.id, "disadvantage")
+                                }
+                              >
+                                Disadvantage
+                              </button>
+                              <button
+                                className="matchup-button"
+                                style={getButtonColor("neutral", mu.status)}
+                                onClick={() =>
+                                  updateMatchupStatus(mu.id, "neutral")
+                                }
+                              >
+                                Neutral
+                              </button>
+                              <button
+                                className="matchup-button"
+                                style={getButtonColor("advantage", mu.status)}
+                                onClick={() =>
+                                  updateMatchupStatus(mu.id, "advantage")
+                                }
+                              >
+                                Advantage
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </Card>
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
+          </Col>
+        ) : (
+          <></>
+        )}
       </Row>
-      {userCharacter ? (
-        <Col md={6}>
-          <Accordion className="matchups">
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>MATCHUPS</Accordion.Header>
-              <Accordion.Body>
-                <Card>
-                  <Table>
-                    <thead>
-                      <tr>
-                        <th>Fighter</th>
-                        <th>Rating</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {matchups.map((mu) => (
-                        <tr key={mu.id}>
-                          <td style={getMatchupColor(mu.status)}>{mu.name}</td>
-                          <td style={getMatchupColor(mu.status)}>
-                            <button
-                              className="matchup-button"
-                              style={getButtonColor("disadvantage", mu.status)}
-                              onClick={() =>
-                                updateMatchupStatus(mu.id, "disadvantage")
-                              }
-                            >
-                              Disadvantage
-                            </button>
-                            <button
-                              className="matchup-button"
-                              style={getButtonColor("neutral", mu.status)}
-                              onClick={() =>
-                                updateMatchupStatus(mu.id, "neutral")
-                              }
-                            >
-                              Neutral
-                            </button>
-                            <button
-                              className="matchup-button"
-                              style={getButtonColor("advantage", mu.status)}
-                              onClick={() =>
-                                updateMatchupStatus(mu.id, "advantage")
-                              }
-                            >
-                              Advantage
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </Card>
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-        </Col>
-      ) : (
-        <></>
-      )}
       <hr />
       <Row>
         {/* <Col md={2}>

@@ -3,8 +3,20 @@ import UserContext from "../../context/UserContext";
 import { Link } from "react-router-dom";
 import { Nav, Navbar, Container, Image, Button } from "react-bootstrap";
 
+
 function Header() {
   const { user, setUser } = useContext(UserContext);
+  const [alertMessage, setAlertMessage] = useState("");
+
+
+  // **** ALERT MESSAGE ****
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    alert(message);
+    setTimeout(() => {
+      setAlertMessage("");
+    }, 3000);
+  };
 
   const handleLogout = async () => {
     try {
@@ -13,6 +25,7 @@ function Header() {
         credentials: "same-origin",
       });
       setUser(null);
+      showAlert("You have logged out. We await your return, warrior!")
     } catch (error) {
       console.log(error);
     }
@@ -32,13 +45,21 @@ function Header() {
           >
             {user ? (
               <>
-                <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
-                <Nav.Link as={Link} to="/" onClick={handleLogout}>Logout</Nav.Link>
+                <Nav.Link as={Link} to="/profile">
+                  Profile
+                </Nav.Link>
+                <Nav.Link as={Link} to="/" onClick={handleLogout}>
+                  Logout
+                </Nav.Link>
               </>
             ) : (
               <>
-                <Nav.Link as={Link}  to="/signup">Sign Up</Nav.Link>
-                <Nav.Link as={Link}  to="/login">Login</Nav.Link>
+                <Nav.Link as={Link} to="/signup">
+                  Sign Up
+                </Nav.Link>
+                <Nav.Link as={Link} to="/login">
+                  Login
+                </Nav.Link>
               </>
             )}
           </Nav>

@@ -27,6 +27,13 @@ function Profile() {
   }, [user]);
 
   const handleDeleteCharacter = async (userCharacterId) => {
+
+    const confirmed = window.confirm("Are you sure you want to delete this character from your roster?");
+
+    if(!confirmed) {
+      return;
+    }
+
     try {
       const response = await fetch(`/api/usercharacters/${userCharacterId}`, {
         method: "DELETE",

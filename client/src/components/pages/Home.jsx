@@ -16,14 +16,12 @@ const Home = () => {
       });
   }, []);
 
+
   const characterDisplay = characters.map((character) => {
     return (
       <Col md={2}>
-        <Link
-          to={`/characters/${character.name}`}
-          key={character.id}
-        >
-          <div className="circle">
+        <div className="circle">
+          <Link to={`/characters/${character.name}`} key={character.id}>
             <Image
               // className="circle"
               className="rosterIcon"
@@ -31,20 +29,22 @@ const Home = () => {
               src={character.head_img}
               alt={character.name}
             />
-            <Image 
-              className="splatter"
-              src="https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/9088c2605aae9b049aa5789e86d77be1d7ce10d8/.github/imgs/HomePage/InkSplatter.svg"
-            />
-          </div>
-        </Link>
+          </Link>
+          <Image
+            className="splatter"
+            src="https://raw.githubusercontent.com/Mttphan261/SFLabAssistant/9088c2605aae9b049aa5789e86d77be1d7ce10d8/.github/imgs/HomePage/InkSplatter.svg"
+          />
+        </div>
       </Col>
     );
   });
 
   return (
-    <div style={{
-      marginBottom: "3%"
-    }}>
+    <div
+      style={{
+        marginBottom: "3%",
+      }}
+    >
       <div className="home-jumbotron jumbotron-fluid">
         <Container>
           <h1

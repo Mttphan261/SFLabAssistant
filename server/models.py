@@ -27,10 +27,11 @@ class Character(db.Model, SerializerMixin):
     moves = db.relationship('Move', back_populates='character')    
     user_characters = db.relationship('UserCharacter', back_populates='character')
     videos = db.relationship('Video', back_populates='character')
+    combos = db.relationship('Combo', back_populates='character')
 
 
     #serialization
-    serialize_rules = ('-moves.character', '-videos.character', '-user_characters.character')
+    serialize_rules = ('-moves.character', '-videos.character', '-user_characters.character', '-moves.character',)
 
     def __repr__(self):
         return f'ID: {self.id}, Name: {self.name}'
@@ -52,6 +53,26 @@ class Move(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'Move: {self.id}, Character: {self.character_id}'
+    
+
+class Combo(db.Model, SerializerMixin):
+    __tablename__ = 'combos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    notation = db.Column(db.String)
+
+    #FKs
+    character_id = db.Column(db.Integer, db.ForeignKey('characters.id'))
+
+    #relationships
+    character = db.relationship('Character', back_populates='combos')
+
+    #serialization
+    serialize_rules = ('-character.combos',)
+
+    def __repr__(self):
+        return f'Combo: {self.id}, Character: {self.character_id}'
 
 class User(db.Model, SerializerMixin, UserMixin):
     __tablename__ = 'users'
