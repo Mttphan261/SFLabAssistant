@@ -19,7 +19,7 @@ const Home = () => {
 
   const characterDisplay = characters.map((character) => {
     return (
-      <Col md={2}>
+      <Col xs={4} sm={4} md={2} className='fighter-icon'>
         <div className="circle">
           <Link to={`/characters/${character.name}`} key={character.id}>
             <Image

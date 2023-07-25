@@ -8,6 +8,7 @@ import UserContext from "../../context/UserContext";
 function SignIn() {
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("")
 
   const initialValues = {
     username: "",
@@ -19,6 +20,22 @@ function SignIn() {
     password: Yup.string().required("Password is required"),
   });
 
+  // const handleSubmit = (values) => {
+  //   fetch("/api/login", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(values),
+  //   })
+  //     .then((r) => r.json())
+  //     .then((user) => {
+  //       setUser(user);
+  //       navigate("/");
+  //     })
+  //     .catch((err) => console.error(err));
+  // };
+
   const handleSubmit = (values) => {
     fetch("/api/login", {
       method: "POST",
@@ -27,12 +44,24 @@ function SignIn() {
       },
       body: JSON.stringify(values),
     })
-      .then((r) => r.json())
-      .then((user) => {
-        setUser(user);
-        navigate("/");
-      })
-      .catch((err) => console.error(err));
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else if (response.status === 401) {
+        throw new Error("Invalid username/email or password");
+      } else if (response.status === 404) {
+        throw new Error("User not found");
+      } else {
+        throw new Error("Error logging in");
+      }
+    }) .then((user) => {
+      setUser(user);
+      navigate("/")
+    })
+    .catch((error) => {
+      console.error(error)
+      setErrorMessage(error.message)
+    })
   };
 
   return (
@@ -50,6 +79,9 @@ function SignIn() {
             <Col className="test">
             <h2>Step into the Ring</h2>
               <h5>Login:</h5>
+              {errorMessage && (
+              <div className="error-message">{errorMessage}</div>
+            )}
               <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}

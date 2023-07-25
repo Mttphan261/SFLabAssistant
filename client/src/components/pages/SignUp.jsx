@@ -8,6 +8,7 @@ import UserContext from "../../context/UserContext";
 function SignUp() {
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("")
 
   const initialValues = {
     username: "",
@@ -24,6 +25,22 @@ function SignUp() {
       .required("Confirm Password is required"),
   });
 
+  // const handleSubmit = (values) => {
+  //   fetch("/api/signup", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(values),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((user) => {
+  //       setUser(user); // Updated: Use setUser to update user data
+  //       navigate("/");
+  //     })
+  //     .catch((error) => console.error(error));
+  // };
+
   const handleSubmit = (values) => {
     fetch("/api/signup", {
       method: "POST",
@@ -32,12 +49,20 @@ function SignUp() {
       },
       body: JSON.stringify(values),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Signup failed."); // Throw an error if the response is not successful
+        }
+        return response.json();
+      })
       .then((user) => {
-        setUser(user); // Updated: Use setUser to update user data
+        setUser(user);
         navigate("/");
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        setErrorMessage("Signup failed. Please try again."); // Set the error message in case of failure
+      });
   };
 
   return (
@@ -120,6 +145,7 @@ function SignUp() {
                   <button type="submit">Submit</button>
                 </Form>
               </Formik>
+              {errorMessage && <p>{errorMessage}</p>}
               <p>
                 Already a user?
                 <span
