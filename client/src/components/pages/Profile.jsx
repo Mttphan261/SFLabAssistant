@@ -65,12 +65,7 @@ function Profile() {
       <div className="profile-jumbotron jumbotron-fluid">
         <Container>
           <h1
-            style={{
-              color: "#fff",
-              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
-              fontWeight: "1000",
-              marginBottom: "300px",
-            }}
+            className='profile-greeting'
           >
             Welcome back to the lab, {user.username} !
           </h1>
@@ -92,7 +87,7 @@ function Profile() {
             <h2>{user.email}</h2>
             <p>Member since: {user.created_at}</p>
           </Col>
-          <Col>
+          <Col className="profile-roster">
             <h2>Roster:</h2>
             {userCharacter.length <= 0 ? (
               <h4>No fighters in your roster</h4>
